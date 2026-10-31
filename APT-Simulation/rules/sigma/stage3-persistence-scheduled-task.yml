@@ -1,0 +1,29 @@
+title: APT Stage 3 - Scheduled Task Creation with Script Execution
+id: 7c5e1201-1b94-4e31-92bb-81d3f9901003
+status: experimental
+description: Detects the creation of scheduled tasks executing PowerShell or script engines via schtasks.exe command line.
+author: ElevanceSkills Internship Training
+date: 2026-10-24
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith: '\schtasks.exe'
+    selection_create:
+        CommandLine|contains:
+            - '/create'
+            - '-create'
+    selection_script:
+        CommandLine|contains:
+            - 'powershell'
+            - 'cmd.exe'
+            - 'wscript'
+            - 'cscript'
+    condition: selection_img and selection_create and selection_script
+falsepositives:
+    - Legitimate enterprise administrative maintenance tasks
+level: medium
+tags:
+    - attack.persistence
+    - attack.t1053.005

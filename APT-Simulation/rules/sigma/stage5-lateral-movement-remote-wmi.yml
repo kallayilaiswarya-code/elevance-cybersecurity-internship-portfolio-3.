@@ -1,0 +1,26 @@
+title: APT Stage 5 - Remote Process Creation via WMI
+id: 7c5e1201-1b94-4e31-92bb-81d3f9901005
+status: experimental
+description: Detects remote command execution using WMI process call create across network nodes.
+author: ElevanceSkills Internship Training
+date: 2026-10-24
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_wmic:
+        Image|endswith:
+            - '\wmic.exe'
+            - '\wmiprvse.exe'
+    selection_call:
+        CommandLine|contains: 'process call create'
+    selection_node:
+        CommandLine|contains: '/node:'
+    condition: selection_wmic and selection_call and selection_node
+falsepositives:
+    - Remote administrative orchestrations or deployment software
+level: high
+tags:
+    - attack.lateral_movement
+    - attack.t1047
+    - attack.t1021.002

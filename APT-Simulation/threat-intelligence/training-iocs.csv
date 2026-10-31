@@ -1,0 +1,5 @@
+"Indicator","Type","Context","Confidence","Status"
+"192.0.2.50","ip-src","Synthetic source address in training events","Training-only","Not verified; do not block based on this exercise"
+"LAB-WIN01","hostname","Fictional host in the training scenario","Training-only","Scenario artifact; not a real-world IOC"
+"LAB-SRV01","hostname","Fictional host in the training scenario","Training-only","Scenario artifact; not a real-world IOC"
+"Unusually long DNS query","behavior","Synthetic event APT006; possible exfiltration indicator","Unconfirmed","Requires DNS and network evidence for validation"

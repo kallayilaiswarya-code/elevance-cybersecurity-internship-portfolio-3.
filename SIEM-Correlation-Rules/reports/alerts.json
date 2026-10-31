@@ -1,0 +1,32 @@
+[
+  {
+    "rule": "Credential Stuffing",
+    "severity": "HIGH",
+    "source_ip": "192.0.2.25",
+    "failed_attempts": 5,
+    "distinct_usernames": 5,
+    "description": "Repeated failed logins across multiple usernames."
+  },
+  {
+    "rule": "Suspicious DNS Activity",
+    "severity": "MEDIUM",
+    "source_ip": "192.0.2.40",
+    "query": "a8f92bd17c44e61f90ab3d7e.example.com",
+    "description": "Long DNS query with a long first label; investigate for possible tunnelling."
+  },
+  {
+    "rule": "Suspicious DNS Activity",
+    "severity": "MEDIUM",
+    "source_ip": "192.0.2.40",
+    "query": "f72d91ab84e06c35c7a1b902.example.com",
+    "description": "Long DNS query with a long first label; investigate for possible tunnelling."
+  },
+  {
+    "rule": "Suspicious PowerShell",
+    "severity": "HIGH",
+    "host": "LAB-WIN01",
+    "username": "student",
+    "command_line": "powershell.exe -NoProfile -EncodedCommand UABvAHcAZQByAFMAaABlAGwAbAA=",
+    "description": "PowerShell encoded-command flag detected; review process context."
+  }
+]

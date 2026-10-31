@@ -1,0 +1,5 @@
+EventID:4625
+
+Image:*\\powershell.exe AND (CommandLine:(*\-EncodedCommand* OR *\ \-enc\ *))
+
+QueryName:/^[^.]{20,}\..{1,}$/

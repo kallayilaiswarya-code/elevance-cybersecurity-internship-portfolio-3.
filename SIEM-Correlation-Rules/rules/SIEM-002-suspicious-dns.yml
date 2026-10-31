@@ -1,0 +1,17 @@
+title: Suspicious DNS Query Detection
+id: SIEM-002
+severity: medium
+status: experimental
+description: Flag DNS queries with a total length of at least 35 characters and a first label of at least 20 characters.
+log_source: DNS query logs
+condition:
+  event_type: dns_query
+  minimum_query_length: 35
+  minimum_first_label_length: 20
+false_positives:
+  - Legitimate long subdomains
+  - Security products and service-discovery systems
+response:
+  - Review query frequency and domain reputation
+  - Examine label entropy, volume, and response patterns
+  - Correlate with endpoint and network activity before concluding tunnelling

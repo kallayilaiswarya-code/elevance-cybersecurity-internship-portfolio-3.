@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aiswarya — ElevanceSkills Cybersecurity SOC Internship Portfolio</title>
+  <meta name="description" content="Cybersecurity SOC Analyst Portfolio by Aiswarya (B.Tech AI & Data Science, Jyothi Engineering College) - ElevanceSkills Internship.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --card-hover: #1e293b;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+      --success: #34d399;
+      --warning: #fbbf24;
+      --code-bg: #030712;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+    a { color: var(--accent); text-decoration: none; transition: all 0.2s; }
+    a:hover { text-decoration: underline; color: #7dd3fc; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
+      background: linear-gradient(180deg, #111827 0%, rgba(11, 15, 25, 0.8) 100%);
+      border-bottom: 1px solid var(--card-border);
+      padding: 60px 0 40px;
+      text-align: center;
+      position: relative;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin: 0 auto 24px;
+    }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      padding: 16px;
+      background: rgba(17, 24, 39, 0.5);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .meta-item strong { color: var(--text); }
+
+    /* Disclosure Box */
+    .disclosure-box {
+      background: rgba(251, 191, 36, 0.05);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      border-left: 4px solid var(--warning);
+      padding: 20px 24px;
+      border-radius: 8px;
+      margin: 36px auto;
+      font-size: 0.95rem;
+    }
+    .disclosure-box h4 {
+      color: var(--warning);
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Section Titles */
+    .section-header {
+      margin: 60px 0 28px;
+      text-align: center;
+    }
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* Tasks Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -10px var(--accent-glow);
+    }
+    .card-top { margin-bottom: 20px; }
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-bottom: 16px;
+    }
+    .card-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .tool-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: #e5e7eb;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+    .card-btn:hover {
+      background: var(--accent);
+      color: #0b0f19;
+      text-decoration: none;
+    }
+
+    /* Skills Matrix */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .skill-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .skill-box h4 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    .skill-box ul {
+      list-style: none;
+    }
+    .skill-box li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .skill-box li::before {
+      content: "▹";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* Screenshot Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .gallery-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-bottom: 1px solid var(--card-border);
+      background: #030712;
+    }
+    .gallery-desc {
+      padding: 16px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .gallery-desc strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      margin-top: 80px;
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="badge">ElevanceSkills SOC Internship</div>
+      <h1>Cybersecurity Operations Portfolio</h1>
+      <p class="subtitle">Comprehensive defensive engineering portfolio encompassing adversary emulation, detection engineering, incident response, network packet forensics, host log analysis, and custom SIEM dashboarding.</p>
+
+      <div class="meta-bar">
+        <div class="meta-item"><strong>Student Intern:</strong> Aiswarya</div>
+        <div class="meta-item"><strong>Degree & Branch:</strong> B.Tech in Artificial Intelligence & Data Science</div>
+        <div class="meta-item"><strong>Institution:</strong> Jyothi Engineering College (Autonomous), Thrissur</div>
+        <div class="meta-item"><strong>University:</strong> APJ Abdul Kalam Technological University</div>
+        <div class="meta-item"><strong>Internship:</strong> ElevanceSkills (SOC Analyst Program)</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="disclosure-box">
+      <h4>Engineering & Hardware Transparency Disclosure</h4>
+      <p>This public portfolio reflects real defensive engineering developed on a resource-constrained workstation (Windows 11, 7.67 GB RAM). In accordance with strict SOC integrity standards, heavy enterprise clusters (live Elasticsearch/Kibana or Security Onion) were not deployed as running background services. Compliance was achieved via standardized offline specifications (Kibana 8.x NDJSON, TheHive 5 case templates, MISP RFC JSON) coupled with a zero-dependency local Python verification server (&lt; 30 MB RAM). Synthetic training logs are clearly distinguished from genuine challenge forensic artifacts.</p>
+    </div>
+
+    <!-- Quick Navigation -->
+    <section>
+      <div class="section-header">
+        <h2>Primary Documentation</h2>
+        <p>Core consolidated academic reports and portfolio navigation guides.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Master Academic Deliverable</div>
+            <h3>Consolidated Internship Report</h3>
+            <p>Comprehensive 9-section academic report detailing activities across all six tasks and explaining their foundational connection to AI, Data Science, Computer Networks, Operating Systems, and Cybersecurity.</p>
+          </div>
+          <a class="card-btn" href="Internship-Report.md">Read Consolidated Report →</a>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Technical Index</div>
+            <h3>Project Master README</h3>
+            <p>Full architectural documentation, directory layout, cryptographic evidence integrity tables, and detailed methodology for all six technical assignments.</p>
+          </div>
+          <a class="card-btn" href="README.md">View Master README →</a>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Security & Audit</div>
+            <h3>Public Release Audit</h3>
+            <p>Sanitization verification report detailing excluded malware binaries, redacted lab credentials, and evidence provenance safeguards for open-source hosting.</p>
+          </div>
+          <a class="card-btn" href="PUBLIC-RELEASE-AUDIT.md">Inspect Audit Report →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Six Core Tasks -->
+    <section>
+      <div class="section-header">
+        <h2>Six Core Technical Tasks</h2>
+        <p>Detailed investigation reports across the defensive cybersecurity lifecycle.</p>
+      </div>
+
+      <div class="grid">
+
+        <!-- Task 1 -->
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Task 1 • Tri-Team Operations</div>
+            <h3>HawkEye Red, Blue & Purple Team Analysis</h3>
+            <p>Tri-team evaluation of the HawkEye keylogger intrusion lifecycle: offensive attack chain simulation, defensive detection mapping, and integrated Purple Team mitigation handovers.</p>
+            <div class="card-tools">
+              <span class="tool-pill">MITRE ATT&CK</span>
+              <span class="tool-pill">Attack Emulation</span>
+              <span class="tool-pill">Purple Handover</span>
+            </div>
+          </div>
+          <a class="card-btn" href="HawkEye/purple-team/purple-team-report.md">View Purple Team Report →</a>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Task 2 • Detection Engineering</div>
+            <h3>Custom SIEM Correlation Rules</h3>
+            <p>Production-grade correlation rules detecting Credential Stuffing (T1110.004), DNS Tunneling (T1071.004), and Obfuscated PowerShell Exploitation (T1059.001) formatted in Sigma, Elastic DSL, and ElastAlert.</p>
+            <div class="card-tools">
+              <span class="tool-pill">Sigma Rules</span>
+              <span class="tool-pill">Elastic Query DSL</span>
+              <span class="tool-pill">Shannon Entropy</span>
+            </div>
+          </div>
+          <a class="card-btn" href="SIEM-Correlation-Rules/reports/Task-2-SIEM-Correlation-Rules-Report.md">View SIEM Rules Report →</a>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Task 3 • Incident Response</div>
+            <h3>Multi-Stage APT Incident Response</h3>
+            <p>End-to-end APT attack simulation and response following NIST SP 800-61. Features standardized TheHive 5 case templates, MISP threat sharing candidate events, and a Python SIEM detection test harness.</p>
+            <div class="card-tools">
+              <span class="tool-pill">TheHive 5</span>
+              <span class="tool-pill">MISP Event JSON</span>
+              <span class="tool-pill">NIST SP 800-61</span>
+            </div>
+          </div>
+          <a class="card-btn" href="APT-Simulation/reports/Task3-Final-Incident-Response-Report.md">View APT IR Report →</a>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Task 4 • Network Forensics</div>
+            <h3>CyberDefenders HawkEye Investigation</h3>
+            <p>Deep packet analysis of a 4,003-packet PCAP: carved PE executable, decoded public IP discovery via bot.whatismyipaddress.com, verified 7 recurring 10-minute SMTP exfiltration cycles, and solved all 24 questions.</p>
+            <div class="card-tools">
+              <span class="tool-pill">Wireshark</span>
+              <span class="tool-pill">Packet Carving</span>
+              <span class="tool-pill">24/24 Solved</span>
+            </div>
+          </div>
+          <a class="card-btn" href="HawkEye/cyberdefenders-hawkeye/hawkeye-lab-report.md">View HawkEye Investigation →</a>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Task 5 • Host Forensics</div>
+            <h3>HTB Brutus SSH Forensics</h3>
+            <p>Host intrusion analysis across Linux auth.log and binary wtmp. Identified 48 dictionary attempts from 65.2.161.68, compromised root Session 37, backdoor user cyberjunkie, and sudo curl persistence staging (8/8 solved).</p>
+            <div class="card-tools">
+              <span class="tool-pill">Linux PAM auth.log</span>
+              <span class="tool-pill">Binary wtmp</span>
+              <span class="tool-pill">8/8 Solved</span>
+            </div>
+          </div>
+          <a class="card-btn" href="Brutus/reports/Task-5-HTB-Brutus-Lab-Report.md">View Brutus Lab Report →</a>
+        </div>
+
+        <!-- Task 6 -->
+        <div class="card">
+          <div class="card-top">
+            <div class="card-tag">Task 6 • SOC Dashboard Engineering</div>
+            <h3>Custom 3-Pillar SIEM Dashboard</h3>
+            <p>Centralized attack visualization tracking Brute-Force, Privilege Escalation, and Exfiltration across 79 ECS-normalized events. Includes Kibana 8.x NDJSON export, zero-dependency Python server, and verified UI.</p>
+            <div class="card-tools">
+              <span class="tool-pill">ECS Normalization</span>
+              <span class="tool-pill">Chart.js</span>
+              <span class="tool-pill">Kibana NDJSON</span>
+            </div>
+          </div>
+          <a class="card-btn" href="SIEM-Dashboard/reports/Task-6-Custom-SIEM-Dashboard-Report.md">View Dashboard Report →</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Visual Evidence Gallery -->
+    <section>
+      <div class="section-header">
+        <h2>Verified Evidence Gallery</h2>
+        <p>Selected visual artifacts and forensic proof captured during lab verifications.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="SIEM-Dashboard/evidence/01_dashboard_overview.png" alt="Custom SIEM Dashboard Overview">
+          <div class="gallery-desc">
+            <strong>Custom SIEM SOC Console (Task 6)</strong>
+            Live computed KPI metric cards, threat category breakdown, and severity distribution powered by dynamic Chart.js graphing.
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <img src="HawkEye/screenshots/03_repeated_smtp_activity.png" alt="Repeated SMTP Activity in Wireshark">
+          <div class="gallery-desc">
+            <strong>Wireshark Recurring Beaconing (Task 4)</strong>
+            Conversation timeline displaying seven deterministic ~10-minute automated SMTP exfiltration cycles.
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <img src="Brutus/Evidence/HTB-Brutus-All-8-Tasks-Completed.png.png" alt="HTB Brutus 100% Completed">
+          <div class="gallery-desc">
+            <strong>HTB Sherlock "Brutus" Solved (Task 5)</strong>
+            Official Hack The Box platform verification demonstrating 100% completion (8/8 tasks correctly answered).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coursework & Skills -->
+    <section>
+      <div class="section-header">
+        <h2>Academic Coursework & Skills Applied</h2>
+        <p>Bridging Bachelor of Technology in AI & Data Science with SOC operations.</p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-box">
+          <h4>Computer Networks</h4>
+          <ul>
+            <li>TCP three-way handshake & stream reassembly</li>
+            <li>DNS protocol analysis & tunneling detection</li>
+            <li>SMTP submission protocol state machine (port 587)</li>
+            <li>Wireshark packet dissection & payload carving</li>
+          </ul>
+        </div>
+        <div class="skill-box">
+          <h4>Operating Systems & Systems</h4>
+          <ul>
+            <li>Linux PAM logging subsystem (/var/log/auth.log)</li>
+            <li>Binary C struct utmp parsing from /var/log/wtmp</li>
+            <li>systemd-logind session lifecycle & TTY allocation</li>
+            <li>Windows PE binary headers & privilege tokens</li>
+          </ul>
+        </div>
+        <div class="skill-box">
+          <h4>Data Science & Analytics</h4>
+          <ul>
+            <li>Shannon entropy calculation for payload anomalies</li>
+            <li>Sliding-window aggregation for credential stuffing</li>
+            <li>Log normalization to Elastic Common Schema (ECS)</li>
+            <li>JSON Lines (JSONL) data pipeline engineering</li>
+          </ul>
+        </div>
+        <div class="skill-box">
+          <h4>Cybersecurity Operations</h4>
+          <ul>
+            <li>NIST SP 800-61 Incident Handling Lifecycle</li>
+            <li>MITRE ATT&CK Enterprise Matrix mapping</li>
+            <li>Sigma & Elastic DSL detection rule engineering</li>
+            <li>TheHive 5 SOAR workflows & MISP threat sharing</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Aiswarya • ElevanceSkills Cybersecurity SOC Internship Portfolio</p>
+      <p style="margin-top: 8px;">Department of Artificial Intelligence & Data Science • Jyothi Engineering College (Autonomous), Thrissur</p>
+      <p style="margin-top: 4px; font-size: 0.8rem;">Affiliated to APJ Abdul Kalam Technological University • Hosted on GitHub Pages</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+[
+  {
+    "timestamp": "2026-10-13T09:00:00Z",
+    "event_id": "APT001",
+    "severity": "MEDIUM",
+    "stage": "initial_access",
+    "host": "LAB-WIN01",
+    "event_type": "suspicious_email_attachment",
+    "source_ip": "192.0.2.50",
+    "details": "Synthetic training event: suspicious attachment opened",
+    "source": "synthetic_training_data"
+  },
+  {
+    "timestamp": "2026-10-13T09:02:00Z",
+    "event_id": "APT002",
+    "severity": "HIGH",
+    "stage": "execution",
+    "host": "LAB-WIN01",
+    "event_type": "suspicious_powershell",
+    "source_ip": "192.0.2.50",
+    "details": "Synthetic training event: encoded PowerShell argument observed",
+    "source": "synthetic_training_data"
+  },
+  {
+    "timestamp": "2026-10-13T09:05:00Z",
+    "event_id": "APT003",
+    "severity": "MEDIUM",
+    "stage": "persistence",
+    "host": "LAB-WIN01",
+    "event_type": "scheduled_task_created",
+    "source_ip": "192.0.2.50",
+    "details": "Synthetic training event: unexpected scheduled task creation",
+    "source": "synthetic_training_data"
+  },
+  {
+    "timestamp": "2026-10-13T09:08:00Z",
+    "event_id": "APT004",
+    "severity": "HIGH",
+    "stage": "privilege_escalation",
+    "host": "LAB-WIN01",
+    "event_type": "privilege_change",
+    "source_ip": "192.0.2.50",
+    "details": "Synthetic training event: unusual privilege change requires investigation",
+    "source": "synthetic_training_data"
+  },
+  {
+    "timestamp": "2026-10-13T09:12:00Z",
+    "event_id": "APT005",
+    "severity": "MEDIUM",
+    "stage": "lateral_movement",
+    "host": "LAB-SRV01",
+    "event_type": "remote_logon",
+    "source_ip": "192.0.2.50",
+    "details": "Synthetic training event: unusual remote logon from LAB-WIN01",
+    "source": "synthetic_training_data"
+  },
+  {
+    "timestamp": "2026-10-13T09:16:00Z",
+    "event_id": "APT006",
+    "severity": "HIGH",
+    "stage": "exfiltration",
+    "host": "LAB-SRV01",
+    "event_type": "unusual_outbound_dns",
+    "source_ip": "192.0.2.50",
+    "details": "Synthetic training event: unusually long DNS query; possible exfiltration indicator",
+    "source": "synthetic_training_data"
+  }
+]

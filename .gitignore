@@ -1,0 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# C extensions & binary executables
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+
+# Network packet captures & forensics
+*.pcap
+*.pcapng
+*.cap
+
+# System accounting & raw system logs
+auth.log*
+syslog*
+wtmp*
+utmp*
+!Brutus/utmp.py
+*.tsv
+*.dump
+
+# Archives & challenge packages
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Backups & temporary editor files
+*.bak
+*.backup
+*~
+*.swp
+*.swo
+
+# Environment variables, credentials & secrets
+.env
+.env.*
+*.key
+*.pem
+*.pfx
+*.pkcs12
+*.crt
+*.cer
+
+# Python Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Operating System & IDE Artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

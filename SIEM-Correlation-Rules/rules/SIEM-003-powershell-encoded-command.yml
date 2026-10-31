@@ -1,0 +1,19 @@
+title: Suspicious PowerShell Encoded Command
+id: SIEM-003
+severity: high
+status: experimental
+description: Flag PowerShell process creation events containing an encoded-command argument.
+log_source: Endpoint process creation logs
+condition:
+  event_type: process_creation
+  process: powershell.exe
+  command_line_contains:
+    - -EncodedCommand
+    - -enc
+false_positives:
+  - Legitimate administrative scripts
+  - Software deployment and management tools
+response:
+  - Review the parent process, user, command line, and process tree
+  - Inspect related PowerShell logs and endpoint telemetry
+  - Isolate a host only when evidence supports a malicious incident and policy permits

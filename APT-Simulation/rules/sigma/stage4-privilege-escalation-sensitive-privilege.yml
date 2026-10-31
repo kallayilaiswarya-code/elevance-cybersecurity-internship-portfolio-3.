@@ -1,0 +1,24 @@
+title: APT Stage 4 - Sensitive Privilege Assignment (SeDebugPrivilege)
+id: 7c5e1201-1b94-4e31-92bb-81d3f9901004
+status: experimental
+description: Detects user session assignment of critical debug privileges (SeDebugPrivilege) often abused for credential dumping and token elevation.
+author: ElevanceSkills Internship Training
+date: 2026-10-24
+logsource:
+    category: privilege_escalation
+    product: windows
+detection:
+    selection_code:
+        EventID: 4672
+    selection_priv:
+        PrivilegeList|contains: 'SeDebugPrivilege'
+    filter_system:
+        SubjectUserName: 'SYSTEM'
+    condition: selection_code and selection_priv and not filter_system
+falsepositives:
+    - Developer tools, debugging sessions by authorized workstation administrators
+level: high
+tags:
+    - attack.privilege_escalation
+    - attack.t1078
+    - attack.t1134
