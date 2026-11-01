@@ -1,0 +1,46 @@
+# ElastAlert Rule: Suspicious Obfuscated PowerShell Process Creation
+# Framework: ElastAlert 2 / Elasticsearch
+# MITRE ATT&CK: T1059.001 (Command and Scripting Interpreter: PowerShell)
+# Author: Aiswarya (ElevanceSkills Cybersecurity Intern)
+
+name: "SIEM-003: Obfuscated PowerShell Execution (-EncodedCommand)"
+type: any
+index: winlogbeat-*
+
+# Match criteria: Process creation (Event 4688 / Sysmon 1) with encoded command parameters
+filter:
+  - query:
+      query_string:
+        query: '(process.name: "powershell.exe" OR process.executable: "*\\powershell.exe") AND (process.command_line: (*-EncodedCommand* OR * -enc * OR *-e * OR *-Encoded*))'
+
+alert:
+  - "debug"
+
+alert_subject: "CRITICAL: Encoded PowerShell Process Spawned on Host: {0}"
+alert_subject_args:
+  - "host.name"
+
+alert_text_type: alert_text_only
+alert_text: |
+  ================================================================================
+  [ALERT] HIGH FIDELITY SIEM DETECTION: OBFUSCATED POWERSHELL EXECUTION
+  ================================================================================
+  Host Name       : {0}
+  User Context    : {1}
+  Parent Process  : {2}
+  Command Line    : {3}
+  MITRE ATT&CK    : T1059.001 (PowerShell) / T1027 (Obfuscated Files or Information)
+  Severity        : HIGH
+
+  INVESTIGATION PLAYBOOK:
+  1. Base64-decode the encoded command string using CyberChef or PowerShell.
+  2. Inspect parent process {2} for anomalous Office or script spawns (WINWORD, EXCEL).
+  3. Review PowerShell Script Block Logging (Event ID 4104) for secondary code.
+  4. Check network socket connections (Sysmon Event ID 3) following execution.
+  5. Terminate malicious process tree and quarantine affected host if warranted.
+  ================================================================================
+alert_text_args:
+  - "host.name"
+  - "user.name"
+  - "process.parent.name"
+  - "process.command_line"

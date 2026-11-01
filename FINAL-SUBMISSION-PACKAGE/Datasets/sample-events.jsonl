@@ -1,0 +1,10 @@
+{"timestamp":"2026-10-13T10:00:00Z","event_type":"login_failure","source_ip":"192.0.2.25","username":"alice"}
+{"timestamp":"2026-10-13T10:00:03Z","event_type":"login_failure","source_ip":"192.0.2.25","username":"bob"}
+{"timestamp":"2026-10-13T10:00:06Z","event_type":"login_failure","source_ip":"192.0.2.25","username":"charlie"}
+{"timestamp":"2026-10-13T10:00:09Z","event_type":"login_failure","source_ip":"192.0.2.25","username":"david"}
+{"timestamp":"2026-10-13T10:00:12Z","event_type":"login_failure","source_ip":"192.0.2.25","username":"emma"}
+{"timestamp":"2026-10-13T10:05:00Z","event_type":"dns_query","source_ip":"192.0.2.40","query":"normal.example.com","query_length":18}
+{"timestamp":"2026-10-13T10:05:02Z","event_type":"dns_query","source_ip":"192.0.2.40","query":"a8f92bd17c44e61f90ab3d7e.example.com","query_length":37}
+{"timestamp":"2026-10-13T10:05:04Z","event_type":"dns_query","source_ip":"192.0.2.40","query":"f72d91ab84e06c35c7a1b902.example.com","query_length":36}
+{"timestamp":"2026-10-13T10:10:00Z","event_type":"process_creation","host":"LAB-WIN01","username":"student","process":"powershell.exe","command_line":"powershell.exe -NoProfile -EncodedCommand UABvAHcAZQByAFMAaABlAGwAbAA="}
+{"timestamp":"2026-10-13T10:11:00Z","event_type":"process_creation","host":"LAB-WIN01","username":"student","process":"notepad.exe","command_line":"notepad.exe notes.txt"}

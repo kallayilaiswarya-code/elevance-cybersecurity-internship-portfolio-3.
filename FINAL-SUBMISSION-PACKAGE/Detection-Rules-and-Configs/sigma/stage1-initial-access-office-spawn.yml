@@ -1,0 +1,29 @@
+title: APT Stage 1 - Office Application Spawning Script Interpreter
+id: 7c5e1201-1b94-4e31-92bb-81d3f9901001
+status: experimental
+description: Detects Microsoft Word or Excel spawning PowerShell or CMD, indicative of malicious document macro execution.
+author: ElevanceSkills Internship Training
+date: 2026-10-24
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_parent:
+        ParentImage|endswith:
+            - '\winword.exe'
+            - '\excel.exe'
+            - '\powerpnt.exe'
+    selection_child:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\cmd.exe'
+            - '\pwsh.exe'
+    condition: selection_parent and selection_child
+falsepositives:
+    - Legitimate macro-based automation in enterprise environments
+level: high
+tags:
+    - attack.initial_access
+    - attack.t1566.001
+    - attack.execution
+    - attack.t1059.001

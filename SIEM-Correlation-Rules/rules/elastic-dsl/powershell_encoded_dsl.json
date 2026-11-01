@@ -1,0 +1,93 @@
+{
+  "_comment": "Elastic Query DSL: Obfuscated PowerShell Command Line Execution",
+  "_framework": "Elasticsearch 8.x / Elastic Security",
+  "_technique": "MITRE ATT&CK T1059.001",
+  "size": 100,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "@timestamp": {
+              "gte": "now-24h"
+            }
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {
+                "term": {
+                  "process.name": "powershell.exe"
+                }
+              },
+              {
+                "wildcard": {
+                  "process.executable": "*\\\\powershell.exe"
+                }
+              }
+            ],
+            "minimum_should_match": 1
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {
+                "wildcard": {
+                  "process.command_line": {
+                    "value": "*-EncodedCommand*",
+                    "case_insensitive": true
+                  }
+                }
+              },
+              {
+                "wildcard": {
+                  "process.command_line": {
+                    "value": "* -enc *",
+                    "case_insensitive": true
+                  }
+                }
+              },
+              {
+                "wildcard": {
+                  "process.command_line": {
+                    "value": "* -e *",
+                    "case_insensitive": true
+                  }
+                }
+              },
+              {
+                "wildcard": {
+                  "process.command_line": {
+                    "value": "*-Encoded*",
+                    "case_insensitive": true
+                  }
+                }
+              }
+            ],
+            "minimum_should_match": 1
+          }
+        }
+      ]
+    }
+  },
+  "fields": [
+    "@timestamp",
+    "host.name",
+    "user.name",
+    "process.pid",
+    "process.parent.name",
+    "process.parent.command_line",
+    "process.name",
+    "process.command_line"
+  ],
+  "_source": false,
+  "sort": [
+    {
+      "@timestamp": {
+        "order": "desc"
+      }
+    }
+  ]
+}

@@ -212,7 +212,7 @@ The measured interval between exfiltration cycles consistently measures **604–
 | SMTP Server | `23.229.162.69` | Destination mail relay for exfiltration (port 587) |
 | Staging Domain | `proforma-invoices.com` | Domain delivering `tkraw_Protected99.exe` |
 | Recon Domain | `bot.whatismyipaddress.com` | Service queried for public IP discovery |
-| Mail Domain | `mail.winlogistics.in` | Reverse DNS / domain of destination mail server |
+| Mail Domain | `macwinlogistics.in` | Queried apex domain for destination mail server (earlier notes cited `mail.winlogistics.in`) |
 | Malicious File | `tkraw_Protected99.exe` | HawkEye Keylogger executable (2,025,472 bytes) |
 | MD5 | `71826BA081E303866CE2A2534491A2F7` | Executable MD5 checksum |
 | SHA-256 | `62099532750DAD1054B127689680C38590033FA0BDFA4FB40C7B4DCB2607FB11` | Executable SHA-256 checksum |

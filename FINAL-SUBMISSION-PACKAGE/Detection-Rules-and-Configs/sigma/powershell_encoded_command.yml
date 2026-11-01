@@ -1,0 +1,23 @@
+title: Suspicious PowerShell Encoded Command
+id: 8f2d6b21-7a44-4f80-9c12-3e6a1b5d9027
+status: test
+description: Detects PowerShell process creation with an encoded command argument.
+author: Aiswarya Kallayil Rajesh
+date: 2026-10-13
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\powershell.exe'
+        CommandLine|contains:
+            - '-EncodedCommand'
+            - ' -enc '
+    condition: selection
+falsepositives:
+    - Legitimate administrative scripts
+    - Software deployment tools
+level: high
+tags:
+    - attack.execution
+    - attack.t1059.001

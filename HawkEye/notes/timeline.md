@@ -27,7 +27,7 @@
 | 68.591965 | 10.4.10.132 | 66.171.248.178 | TCP/80 | HTTP connection |
 | 68.640169 | 10.4.10.132 | 66.171.248.178 | HTTP | GET `/` |
 | 68.691423 | 66.171.248.178 | 10.4.10.132 | HTTP | HTTP 200 OK |
-| 68.702274 | 10.4.10.132 | 10.4.10.4 | DNS | Query for `mail.winlogistics.in` |
+| 68.702274 | 10.4.10.132 | 10.4.10.4 | DNS | Query for `macwinlogistics.in` (earlier notes cited `mail.winlogistics.in`) |
 | 68.783223 | 10.4.10.4 | 10.4.10.132 | DNS | Response: `23.229.162.69` |
 | 68.784554 | 10.4.10.132 | 23.229.162.69 | TCP/587 | SMTP connection initiated |
 | 69.160215 | 23.229.162.69 | 10.4.10.132 | SMTP | SMTP server greeting |
@@ -68,6 +68,6 @@ The observed sequence begins with DNS activity associated with `proforma-invoice
 
 Shortly afterward, the internal host performed an external-IP lookup and contacted the resulting IP address over HTTP.
 
-The host then resolved `mail.winlogistics.in`, established an SMTP connection to `23.229.162.69` on port 587, authenticated successfully, and submitted an email containing HawkEye keylogger/password-log information.
+The host then resolved `macwinlogistics.in` (earlier notes cited `mail.winlogistics.in`), established an SMTP connection to `23.229.162.69` on port 587, authenticated successfully via cleartext Base64, and submitted an email containing HawkEye keylogger/password-log information.
 
 Similar DNS lookup and SMTP submission activity was observed repeatedly throughout the capture.

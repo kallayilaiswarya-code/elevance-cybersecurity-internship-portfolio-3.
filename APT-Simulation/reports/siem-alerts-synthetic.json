@@ -2,7 +2,7 @@
   {
     "alert_id": "SIEM-ALT-0001",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.447877+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.265216+00:00",
     "rule_id": "7c5e1201-1b94-4e31-92bb-81d3f9901001",
     "rule_title": "APT Stage 1 - Office Application Spawning Script Interpreter",
     "rule_file": "stage1-initial-access-office-spawn.yml",
@@ -27,7 +27,7 @@
   {
     "alert_id": "SIEM-ALT-0002",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.447877+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.265216+00:00",
     "rule_id": "6f2e8c9a-41b7-4d62-9a31-8c4f7e2b1056",
     "rule_title": "APT Training - Suspicious Encoded PowerShell",
     "rule_file": "apt-suspicious-powershell.yml",
@@ -50,7 +50,7 @@
   {
     "alert_id": "SIEM-ALT-0003",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.447877+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.265216+00:00",
     "rule_id": "6f2e8c9a-41b7-4d62-9a31-8c4f7e2b1056",
     "rule_title": "APT Stage 2 - Suspicious Encoded PowerShell",
     "rule_file": "stage2-execution-encoded-powershell.yml",
@@ -73,7 +73,7 @@
   {
     "alert_id": "SIEM-ALT-0004",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.447877+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.271028+00:00",
     "rule_id": "7c5e1201-1b94-4e31-92bb-81d3f9901003",
     "rule_title": "APT Stage 3 - Scheduled Task Creation with Script Execution",
     "rule_file": "stage3-persistence-scheduled-task.yml",
@@ -96,7 +96,7 @@
   {
     "alert_id": "SIEM-ALT-0005",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.449899+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.271028+00:00",
     "rule_id": "7c5e1201-1b94-4e31-92bb-81d3f9901004",
     "rule_title": "APT Stage 4 - Sensitive Privilege Assignment (SeDebugPrivilege)",
     "rule_file": "stage4-privilege-escalation-sensitive-privilege.yml",
@@ -120,7 +120,7 @@
   {
     "alert_id": "SIEM-ALT-0006",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.449899+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.271718+00:00",
     "rule_id": "7c5e1201-1b94-4e31-92bb-81d3f9901005",
     "rule_title": "APT Stage 5 - Remote Process Creation via WMI",
     "rule_file": "stage5-lateral-movement-remote-wmi.yml",
@@ -144,7 +144,7 @@
   {
     "alert_id": "SIEM-ALT-0007",
     "detection_engine": "Route-D-Python-SIEM-Demonstration",
-    "detection_timestamp": "2026-10-24T15:24:13.449899+00:00",
+    "detection_timestamp": "2026-10-31T16:55:50.271718+00:00",
     "rule_id": "7c5e1201-1b94-4e31-92bb-81d3f9901006",
     "rule_title": "APT Stage 6 - Suspicious DNS Tunneling Query",
     "rule_file": "stage6-exfiltration-dns-tunneling.yml",

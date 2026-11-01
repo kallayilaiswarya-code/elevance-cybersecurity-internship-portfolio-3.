@@ -1,0 +1,27 @@
+title: APT Stage 6 - Suspicious DNS Tunneling Query
+id: 7c5e1201-1b94-4e31-92bb-81d3f9901006
+status: experimental
+description: Detects suspicious DNS TXT queries with abnormal query length indicative of DNS tunneling exfiltration.
+author: ElevanceSkills Internship Training
+date: 2026-10-24
+logsource:
+    category: dns_query
+    product: windows
+detection:
+    selection_type:
+        QueryType: 'TXT'
+    selection_len:
+        QueryLength|gte: 50
+    filter_spf:
+        QueryName|contains:
+            - '_spf'
+            - 'v=spf1'
+            - 'domainkey'
+    condition: selection_type and selection_len and not filter_spf
+falsepositives:
+    - Complex SPF/DKIM records or legitimate security vendor TXT lookups
+level: high
+tags:
+    - attack.exfiltration
+    - attack.t1071.004
+    - attack.t1048

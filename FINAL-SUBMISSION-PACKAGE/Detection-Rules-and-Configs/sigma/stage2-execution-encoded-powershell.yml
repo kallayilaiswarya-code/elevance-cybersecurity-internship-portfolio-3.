@@ -1,0 +1,24 @@
+title: APT Stage 2 - Suspicious Encoded PowerShell
+id: 6f2e8c9a-41b7-4d62-9a31-8c4f7e2b1056
+status: experimental
+description: Detects PowerShell command lines containing an encoded-command argument.
+author: ElevanceSkills Internship Training
+date: 2026-10-13
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_image:
+        Image|endswith: '\powershell.exe'
+    selection_encoded:
+        CommandLine|contains:
+            - '-EncodedCommand'
+            - '-enc'
+            - '-Encoded'
+    condition: selection_image and selection_encoded
+falsepositives:
+    - Authorized administrative scripts using encoded PowerShell commands
+level: high
+tags:
+    - attack.execution
+    - attack.t1059.001

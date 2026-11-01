@@ -65,7 +65,7 @@
 | SMTP server IP | `23.229.162.69` | SMTP destination |
 | SMTP server hostname | `p3plcpnl0413.prod.phx3.secureserver.net` | Server hostname from SMTP greeting |
 | Destination port | `587` | SMTP submission |
-| Related domain | `mail.winlogistics.in` | Domain resolved before SMTP connection |
+| Related domain | `macwinlogistics.in` | Queried domain resolved before SMTP connection (earlier notes cited `mail.winlogistics.in`) |
 | Protocol | SMTP | Email submission |
 
 ---

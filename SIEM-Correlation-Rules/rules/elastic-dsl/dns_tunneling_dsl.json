@@ -1,0 +1,57 @@
+{
+  "_comment": "Elastic Query DSL: High-Entropy / Long Subdomain DNS Tunneling Detection",
+  "_framework": "Elasticsearch 8.x / Elastic Security",
+  "_technique": "MITRE ATT&CK T1071.004",
+  "size": 100,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "@timestamp": {
+              "gte": "now-15m"
+            }
+          }
+        },
+        {
+          "range": {
+            "dns.question.length": {
+              "gte": 35
+            }
+          }
+        },
+        {
+          "terms": {
+            "dns.question.type": ["TXT", "A", "AAAA"]
+          }
+        },
+        {
+          "regexp": {
+            "dns.question.name": {
+              "value": "^[^.]{20,}\\..+",
+              "flags": "ALL",
+              "case_insensitive": true,
+              "max_determinized_states": 10000
+            }
+          }
+        }
+      ]
+    }
+  },
+  "fields": [
+    "@timestamp",
+    "source.ip",
+    "dns.question.name",
+    "dns.question.type",
+    "dns.question.length",
+    "dns.response_code"
+  ],
+  "_source": false,
+  "sort": [
+    {
+      "@timestamp": {
+        "order": "desc"
+      }
+    }
+  ]
+}

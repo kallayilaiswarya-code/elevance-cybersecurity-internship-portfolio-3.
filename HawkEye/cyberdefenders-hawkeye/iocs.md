@@ -19,7 +19,7 @@
 | SMTP Server IP | `23.229.162.69` | Destination SMTP mail server for exfiltration (United States, GoDaddy) |
 | Domain | `proforma-invoices.com` | Staging domain associated with malware download |
 | Domain | `bot.whatismyipaddress.com` | External IP lookup service queried before each exfiltration cycle |
-| Domain | `mail.winlogistics.in` | SMTP server domain / reverse DNS hostname |
+| Domain | `macwinlogistics.in` | Queried apex domain for destination mail server (earlier notes cited `mail.winlogistics.in`) |
 
 ## Malware / Binary Indicators
 

@@ -1,0 +1,107 @@
+{
+  "name": "APT-SIM-CASE-TEMPLATE",
+  "title": "Incident Case: Synthetic Multi-Stage APT Intrusion Investigation (Candidate Template)",
+  "description": "Comprehensive SOC investigation case template modeled for TheHive 5. Represents the multi-stage APT training scenario progressing across Initial Access, Execution, Persistence, Privilege Escalation, Lateral Movement, and Exfiltration.\n\nDISCLAIMER: This is a candidate case template generated offline. It has not been imported into a live TheHive instance.",
+  "severity": 3,
+  "flag": false,
+  "tlp": 2,
+  "pap": 2,
+  "tags": [
+    "apt:training",
+    "exercise:elevance-task3",
+    "mitre:t1566.001",
+    "mitre:t1059.001",
+    "mitre:t1053.005",
+    "mitre:t1078",
+    "mitre:t1021.002",
+    "mitre:t1071.004",
+    "status:candidate-template"
+  ],
+  "tasks": [
+    {
+      "title": "Task 1 - Initial Access Analysis (T1566.001)",
+      "description": "Inspect email gateway logs and user mailbox on LAB-WIN01. Extract attachment invoice_march2026.docm and identify macro execution behavior spawning cmd.exe or powershell.exe.",
+      "status": "Waiting"
+    },
+    {
+      "title": "Task 2 - Execution & Script Block Analysis (T1059.001)",
+      "description": "Analyze Windows Event ID 4688 and PowerShell ScriptBlock Event ID 4104 on LAB-WIN01. Deobfuscate base64 payload passed via -EncodedCommand argument.",
+      "status": "Waiting"
+    },
+    {
+      "title": "Task 3 - Persistence Audit (T1053.005)",
+      "description": "Review Task Scheduler events (Task ID 106/140, Event 4698). Verify creation of scheduled task 'WindowsUpdateCheck' executing updater.ps1 as SYSTEM.",
+      "status": "Waiting"
+    },
+    {
+      "title": "Task 4 - Privilege Escalation & Token Verification (T1078 / T1134)",
+      "description": "Review Windows Security Event 4672 on LAB-WIN01. Confirm assignment of SeDebugPrivilege to the non-admin student user context via consent.exe.",
+      "status": "Waiting"
+    },
+    {
+      "title": "Task 5 - Lateral Movement & Remote WMI Trace (T1021.002 / T1047)",
+      "description": "Correlate Network Logon (Event 4624 Type 3) on LAB-SRV01 from source LAB-WIN01 (192.0.2.50). Identify WMI process call create invoked via wmiprvse.exe.",
+      "status": "Waiting"
+    },
+    {
+      "title": "Task 6 - Exfiltration & DNS Tunneling Analysis (T1071.004)",
+      "description": "Inspect Sysmon Event ID 22 and network DNS query logs. Measure query length and entropy for outbound requests to exfil.training.lab.",
+      "status": "Waiting"
+    },
+    {
+      "title": "Task 7 - Containment, Eradication & Recovery (NIST SP 800-61r2)",
+      "description": "Formulate containment actions: host network isolation for LAB-WIN01 and LAB-SRV01, scheduled task deletion, domain DNS sinkholing, and password resets.",
+      "status": "Waiting"
+    }
+  ],
+  "observables": [
+    {
+      "dataType": "ip",
+      "data": "192.0.2.50",
+      "message": "Synthetic source IP in RFC 5737 TEST-NET-1 documentation range",
+      "tlp": 2,
+      "ioc": false,
+      "tags": ["synthetic", "source-ip", "training"]
+    },
+    {
+      "dataType": "hostname",
+      "data": "LAB-WIN01",
+      "message": "Patient Zero workstation in training simulation",
+      "tlp": 2,
+      "ioc": false,
+      "tags": ["internal-host", "workstation"]
+    },
+    {
+      "dataType": "hostname",
+      "data": "LAB-SRV01",
+      "message": "Internal staging server in training simulation",
+      "tlp": 2,
+      "ioc": false,
+      "tags": ["internal-host", "server"]
+    },
+    {
+      "dataType": "domain",
+      "data": "exfil.training.lab",
+      "message": "Synthetic exfiltration destination domain",
+      "tlp": 2,
+      "ioc": false,
+      "tags": ["synthetic", "c2-domain"]
+    },
+    {
+      "dataType": "filename",
+      "data": "invoice_march2026.docm",
+      "message": "Synthetic malicious macro attachment",
+      "tlp": 2,
+      "ioc": false,
+      "tags": ["malicious-attachment", "synthetic"]
+    },
+    {
+      "dataType": "other",
+      "data": "WindowsUpdateCheck",
+      "message": "Synthetic persistence scheduled task name",
+      "tlp": 2,
+      "ioc": false,
+      "tags": ["persistence", "scheduled-task"]
+    }
+  ]
+}

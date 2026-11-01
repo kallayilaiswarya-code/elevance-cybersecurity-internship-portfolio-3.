@@ -89,7 +89,7 @@ The internship was structured around five core educational and technical objecti
 
 ### 4.1 Task 1: HawkEye Red Team, Blue Team, and Purple Team Analysis
 - **Objective:** Evaluate the complete intrusion lifecycle of the HawkEye keylogger through offensive, defensive, and collaborative perspectives.
-- **Red Team Analysis:** Deconstructed the attack chain: phishing delivery $\rightarrow$ HTTP payload staging (`/proforma/tkraw_Protected99.exe`) $\rightarrow$ public IP discovery $\rightarrow$ local keystroke logging $\rightarrow$ automated SMTP data exfiltration to external infrastructure (`23.229.162.69:587`).
+- **Red Team Analysis:** Deconstructed the attack chain: phishing delivery $\rightarrow$ HTTP payload staging (`/proforma/tkraw_Protected99.exe`) $\rightarrow$ public IP discovery $\rightarrow$ local keystroke logging $\rightarrow$ automated cleartext Base64 SMTP data exfiltration to external mail infrastructure `23.229.162.69:587` (`macwinlogistics.in`).
 - **Blue Team Analysis:** Mapped defensive detection controls across network, host, and email boundaries. Identified detection gaps in legacy anti-malware and uninspected egress traffic.
 - **Purple Team Handover:** Formulated an integrated detection improvement plan, recommending Snort/Suricata network signatures, Sysmon host auditing (`Event ID 1`, `3`), and host firewall rules.
 - **Primary Reports:**
@@ -117,7 +117,7 @@ The internship was structured around five core educational and technical objecti
 - **Objective:** Solve all 24 questions of the CyberDefenders HawkEye challenge by performing forensic packet analysis on `stealer.pcap`.
 - **Packet Analysis & Evidence Extraction:** Inspected 4,003 packets in Wireshark. Carved the malicious executable `tkraw_Protected99.exe` (2,025,472 bytes) from HTTP TCP stream reassembly and validated its MD5 (`71826BA0...`) and SHA-256 (`62099532...`) hashes.
 - **Reconnaissance & Egress Disambiguation:** Dissected the automated reconnaissance routine: resolved DNS query for `bot.whatismyipaddress.com` to `66.171.248.178`, which returned the victim's external public IP **`173.66.146.112`** in the HTTP response payload. Corroborated this IP in the subsequent SMTP server EHLO response.
-- **Exfiltration Cadence:** Mapped all 7 recurring exfiltration cycles, calculating an exact recurring beacon interval of 604–606 seconds (10 minutes).
+- **Exfiltration Cadence:** Mapped all 7 recurring exfiltration cycles on the network, documenting recurring ~10-minute intervals (604–606 seconds) between outbound bursts, while distinguishing wire observations from unobservable internal host process states.
 - **Screenshot Verification:** Captured and cryptographically verified 10 genuine Wireshark screenshots (1366×768 resolution), embedding them directly into the report narrative with specific frame numbers.
 - **Primary Report:** [HawkEye Lab Report](HawkEye/cyberdefenders-hawkeye/hawkeye-lab-report.md) & [Questions and Answers](HawkEye/cyberdefenders-hawkeye/questions-and-answers.md)
 

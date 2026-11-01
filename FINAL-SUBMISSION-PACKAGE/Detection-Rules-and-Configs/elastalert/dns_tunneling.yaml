@@ -1,0 +1,46 @@
+# ElastAlert Rule: Suspicious DNS Query Length & Tunneling Detection
+# Framework: ElastAlert 2 / Elasticsearch
+# MITRE ATT&CK: T1071.004 (Application Layer Protocol: DNS)
+# Author: Aiswarya (ElevanceSkills Cybersecurity Intern)
+
+name: "SIEM-002: Suspicious Long DNS Query (Potential DNS Tunneling)"
+type: any
+index: packetbeat-*
+
+# Match criteria: Queries with total length >= 35 characters and suspicious record types
+filter:
+  - query:
+      query_string:
+        query: 'dns.question.length: >=35 AND (dns.question.type: "TXT" OR dns.question.type: "A" OR dns.question.type: "AAAA")'
+
+alert:
+  - "debug"
+
+alert_subject: "WARNING: High-Entropy / Anomalous DNS Query from Host: {0}"
+alert_subject_args:
+  - "source.ip"
+
+alert_text_type: alert_text_only
+alert_text: |
+  ================================================================================
+  [ALERT] SUSPICIOUS DNS ACTIVITY: POTENTIAL TUNNELING OR EXFILTRATION
+  ================================================================================
+  Source IP       : {0}
+  Query Name      : {1}
+  Query Type      : {2}
+  Query Length    : {3} bytes
+  MITRE ATT&CK    : T1071.004 (DNS Data Exfiltration & C2 Tunneling)
+  Severity        : MEDIUM-HIGH
+
+  INVESTIGATION PLAYBOOK:
+  1. Inspect first label length and calculate Shannon entropy of domain string.
+  2. Examine query volume: is client generating high-frequency automated requests?
+  3. Inspect DNS resolver responses (NXDOMAIN vs. valid TXT payloads).
+  4. Cross-reference source host process telemetry (Sysmon Event ID 22).
+  5. If unauthorized C2 or exfiltration confirmed, isolate endpoint from LAN.
+  ================================================================================
+alert_text_args:
+  - "source.ip"
+  - "dns.question.name"
+  - "dns.question.type"
+  - "dns.question.length"

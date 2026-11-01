@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElevanceSkills SOC Analyst Internship — Capstone Demonstration</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: #030712;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #stage-container {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      background: radial-gradient(circle at 50% 30%, #0c162d 0%, #060b18 70%, #030712 100%);
+      box-shadow: 0 0 50px rgba(0, 242, 254, 0.15);
+      overflow: hidden;
+      transform-origin: center center;
+    }
+
+    #bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      z-index: 1;
+      opacity: 0.6;
+    }
+
+    /* Top Header Bar */
+    .header-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 50px;
+      background: rgba(6, 11, 24, 0.85);
+      border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #2563eb, #00f2fe);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #e2e8f0;
+      letter-spacing: 0.5px;
+    }
+
+    .scene-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .scene-pill {
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(0, 242, 254, 0.4);
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: #00f2fe;
+      font-weight: 600;
+      font-family: monospace;
+    }
+
+    /* Main Scene Workspace */
+    .scene-workspace {
+      position: absolute;
+      top: 70px;
+      bottom: 150px;
+      left: 0;
+      right: 0;
+      padding: 30px 60px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .scene {
+      display: none;
+      height: 100%;
+      width: 100%;
+      flex-direction: column;
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .scene.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Subtitle / Narration Lower Third */
+    .lower-third {
+      position: absolute;
+      bottom: 60px;
+      left: 60px;
+      right: 60px;
+      height: 80px;
+      background: rgba(10, 19, 41, 0.92);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      gap: 20px;
+      z-index: 10;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .speaker-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e3a8a, #0284c7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      font-size: 16px;
+      border: 2px solid #00f2fe;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .teleprompter-text {
+      font-size: 19px;
+      line-height: 1.4;
+      color: #f1f5f9;
+      font-weight: 400;
+      flex-grow: 1;
+      font-style: italic;
+    }
+
+    .teleprompter-text span.highlight {
+      color: #00f2fe;
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    /* Bottom Control Bar */
+    .controls-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 55px;
+      background: #040814;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 50px;
+      gap: 25px;
+      z-index: 20;
+    }
+
+    .btn-control {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-control:hover {
+      background: rgba(0, 242, 254, 0.2);
+      border-color: #00f2fe;
+    }
+
+    .timeline-container {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .time-label {
+      font-family: monospace;
+      font-size: 14px;
+      color: #94a3b8;
+      width: 100px;
+    }
+
+    .progress-bar-bg {
+      flex-grow: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #00f2fe);
+      border-radius: 4px;
+      transition: width 0.1s linear;
+    }
+
+    .scene-nav-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-scene {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-scene.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #00f2fe;
+    }
+
+    /* Scene Specific Component Styles */
+    .scene-title {
+      font-size: 38px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ffffff 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .scene-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      margin-bottom: 25px;
+    }
+
+    /* Grid Layouts */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+    }
+
+    .cyber-card {
+      background: rgba(12, 22, 45, 0.7);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      border-radius: 12px;
+      padding: 22px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cyber-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #2563eb, #00f2fe);
+    }
+
+    .card-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #00f2fe;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 12px;
+    }
+
+    .card-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    .metric-value {
+      font-size: 42px;
+      font-weight: 800;
+      font-family: monospace;
+      color: #00f2fe;
+      margin-bottom: 6px;
+    }
+
+    /* Screenshot Box */
+    .screenshot-frame {
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      background: #000;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screenshot-frame img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .screenshot-caption {
+      background: rgba(10, 19, 41, 0.95);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #94a3b8;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Code Snippet Box */
+    .code-box {
+      background: #080d1a;
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: "Consolas", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #38bdf8;
+      overflow: hidden;
+    }
+
+    .code-box .kw { color: #f43f5e; font-weight: 600; }
+    .code-box .str { color: #a3e635; }
+    .code-box .comm { color: #64748b; font-style: italic; }
+
+    /* Timeline Stepper */
+    .step-chain {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .step-item {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: center;
+      position: relative;
+    }
+
+    .step-item.active-step {
+      border-color: #00f2fe;
+      background: rgba(37, 99, 235, 0.25);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+
+    .step-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: #00f2fe;
+      margin-bottom: 4px;
+    }
+
+    .step-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="stage-container">
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Top Header -->
+    <header class="header-bar">
+      <div class="brand-group">
+        <span class="brand-badge">SOC Capstone</span>
+        <span class="brand-title">ElevanceSkills Cybersecurity SOC Analyst Internship</span>
+      </div>
+      <div class="scene-indicator">
+        <span id="current-scene-name">Scene 1: Introduction & Tri-Team Architecture</span>
+        <span class="scene-pill" id="scene-counter">01 / 06</span>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="scene-workspace">
+
+      <!-- SCENE 1: INTRODUCTION (0:00 - 0:30) -->
+      <section class="scene active" id="scene-1">
+        <h1 class="scene-title">Cybersecurity SOC Analyst Internship Capstone</h1>
+        <p class="scene-subtitle">Student Intern: Aiswarya | B.Tech in Artificial Intelligence & Data Science | Jyothi Engineering College</p>
+
+        <div class="grid-3" style="margin-bottom: 25px;">
+          <div class="cyber-card">
+            <div class="card-label">Offensive Emulation</div>
+            <div class="card-title">Red Team Attack Chains</div>
+            <div class="card-body">Payload staging, C2 channel establishment, evasion tactics, and exfiltration cadence deconstruction.</div>
+          </div>
+          <div class="cyber-card">
+            <div class="card-label">Defensive Monitoring</div>
+            <div class="card-title">Blue Team Engineering</div>
+            <div class="card-body">Sigma rules, Elastic Query DSL, ElastAlert correlation, and automated incident triage playbooks.</div>
+          </div>
+          <div class="cyber-card">
+            <div class="card-label">Collaborative Defense</div>
+            <div class="card-title">Purple Team Handover</div>
+            <div class="card-body">Bridging visibility gaps, MITRE ATT&CK & D3FEND matrices, Suricata network signatures, and containment.</div>
+          </div>
+        </div>
+
+        <div class="grid-6">
+          <div class="cyber-card" style="padding: 14px; text-align: center;">
+            <div class="card-label">Task 1</div>
+            <div style="font-size: 13px; font-weight: 600;">HawkEye Tri-Team</div>
+          </div>
+          <div class="cyber-card" style="padding: 14px; text-align: center;">
+            <div class="card-label">Task 2</div>
+            <div style="font-size: 13px; font-weight: 600;">SIEM Correlation</div>
+          </div>
+          <div class="cyber-card" style="padding: 14px; text-align: center;">
+            <div class="card-label">Task 3</div>
+            <div style="font-size: 13px; font-weight: 600;">Multi-Stage APT</div>
+          </div>
+          <div class="cyber-card" style="padding: 14px; text-align: center;">
+            <div class="card-label">Task 4</div>
+            <div style="font-size: 13px; font-weight: 600;">Network Forensics</div>
+          </div>
+          <div class="cyber-card" style="padding: 14px; text-align: center;">
+            <div class="card-label">Task 5</div>
+            <div style="font-size: 13px; font-weight: 600;">Linux Forensics</div>
+          </div>
+          <div class="cyber-card" style="padding: 14px; text-align: center;">
+            <div class="card-label">Task 6</div>
+            <div style="font-size: 13px; font-weight: 600;">Custom Dashboard</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 2: CUSTOM SIEM DASHBOARD (0:30 - 1:10) -->
+      <section class="scene" id="scene-2">
+        <h1 class="scene-title">Interactive Custom SIEM Dashboard (Task 6)</h1>
+        <p class="scene-subtitle">Locally Running Dashboard Application | 79 Normalized ECS Events (Project Dataset) | Lightweight Python Backend (&lt; 30 MB RAM)</p>
+
+        <div class="grid-2" style="height: 100%;">
+          <div class="screenshot-frame">
+            <img src="../../SIEM-Dashboard/evidence/01_dashboard_overview.png" alt="SIEM Dashboard Overview">
+            <div class="screenshot-caption">
+              <span>Figure 1: Custom SIEM Dashboard (Offline Dataset Overview)</span>
+              <span style="color: #00f2fe; font-family: monospace;">Locally hosted at 127.0.0.1:8080</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="grid-3" style="gap: 12px;">
+              <div class="cyber-card" style="padding: 16px;">
+                <div class="metric-value">79</div>
+                <div class="card-label">Dataset Events</div>
+              </div>
+              <div class="cyber-card" style="padding: 16px;">
+                <div class="metric-value">69</div>
+                <div class="card-label">Threat Records</div>
+              </div>
+              <div class="cyber-card" style="padding: 16px;">
+                <div class="metric-value">6</div>
+                <div class="card-label">Attacker IPs</div>
+              </div>
+            </div>
+
+            <div class="cyber-card" style="flex-grow: 1;">
+              <div class="card-label">Dataset Categorization Across Three Threat Pillars</div>
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                <div style="padding: 10px; background: rgba(0,0,0,0.3); border-left: 3px solid #ef4444; border-radius: 4px;">
+                  <strong style="color: #fff;">Pillar 1: Brute-Force Events</strong> — 57 Records (Correlated HTB Brutus SSH attempts & Synthetic Stuffing).
+                </div>
+                <div style="padding: 10px; background: rgba(0,0,0,0.3); border-left: 3px solid #f59e0b; border-radius: 4px;">
+                  <strong style="color: #fff;">Pillar 2: Privilege Escalation</strong> — 4 Records (Local user creation, sudo group modification).
+                </div>
+                <div style="padding: 10px; background: rgba(0,0,0,0.3); border-left: 3px solid #38bdf8; border-radius: 4px;">
+                  <strong style="color: #fff;">Pillar 3: Data Exfiltration</strong> — 7 Records (Periodic HawkEye SMTP bursts & DNS tunneling).
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 3: DETECTION ENGINEERING (1:10 - 1:50) -->
+      <section class="scene" id="scene-3">
+        <h1 class="scene-title">Detection Engineering &amp; Rule Validation (Task 2)</h1>
+        <p class="scene-subtitle">Custom Detection Rules &amp; Offline Configurations: Sigma YAML, ElastAlert 2, and Elasticsearch 8.x Query DSL</p>
+
+        <div class="grid-3" style="height: 100%;">
+          <div class="cyber-card" style="display: flex; flex-direction: column;">
+            <div class="card-label">Threat Vector 1: MITRE T1110.004</div>
+            <div class="card-title">Distributed Credential Stuffing</div>
+            <div class="code-box" style="flex-grow: 1;">
+<span class="comm"># Sigma Rule (Offline Definition)</span>
+<span class="kw">title</span>: Repeated Failed Logins
+<span class="kw">detection</span>:
+  selection:
+    event.code: <span class="str">4625</span>
+  condition: selection | count() by source.ip > 5
+<span class="kw">timeframe</span>: <span class="str">300s</span>
+<span class="kw">level</span>: medium
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Cardinality aggregation detecting &gt; 5 distinct user failures from 1 source IP.</p>
+          </div>
+
+          <div class="cyber-card" style="display: flex; flex-direction: column;">
+            <div class="card-label">Threat Vector 2: MITRE T1071.004</div>
+            <div class="card-title">High-Throughput DNS Tunneling</div>
+            <div class="code-box" style="flex-grow: 1;">
+<span class="comm"># ElastAlert 2 (Offline YAML Config)</span>
+<span class="kw">name</span>: DNS Tunneling Anomaly
+<span class="kw">type</span>: any
+<span class="kw">index</span>: packetbeat-*
+<span class="kw">filter</span>:
+  - query:
+      query_string:
+        query: <span class="str">"dns.question.name.length: &gt; 50"</span>
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Detects high-entropy base64 encoded TXT payloads over port 53.</p>
+          </div>
+
+          <div class="cyber-card" style="display: flex; flex-direction: column;">
+            <div class="card-label">Threat Vector 3: MITRE T1059.001</div>
+            <div class="card-title">Obfuscated PowerShell Abuse</div>
+            <div class="code-box" style="flex-grow: 1;">
+<span class="comm"># Elastic Query DSL (Offline Query)</span>
+{
+  <span class="kw">"query"</span>: {
+    <span class="kw">"regexp"</span>: {
+      <span class="str">"process.command_line"</span>: <span class="str">".*-[eE][nN]?[cC]?.*"</span>
+    }
+  }
+}
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Regex matching encoded script flags (-enc, -EncodedCommand).</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; padding: 10px 18px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; font-size: 13px; color: #a7f3d0; display: flex; justify-content: space-between; align-items: center;">
+          <span><strong>Validation Test Result:</strong> Tested against 10 sample log events in <code>sample-events.jsonl</code> &mdash; triggered exactly <strong>4 alerts</strong> (1 credential stuffing, 2 DNS tunneling, 1 PowerShell encoded command).</span>
+          <span style="color: #34d399; font-weight: 700; background: rgba(16, 185, 129, 0.2); padding: 4px 10px; border-radius: 4px;">0 False Positives on Benign Events</span>
+        </div>
+      </section>
+
+      <!-- SCENE 4: HAWKEYE & BRUTUS INVESTIGATIONS (1:50 - 2:30) -->
+      <section class="scene" id="scene-4">
+        <h1 class="scene-title">Root-Cause Threat Forensics (Tasks 4 & 5)</h1>
+        <p class="scene-subtitle">CyberDefenders HawkEye (4,003 Packets) &amp; HackTheBox Sherlock "Brutus" (auth.log / wtmp)</p>
+
+        <div class="grid-2" style="height: 100%;">
+          <div class="cyber-card" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card-label">Task 4: HawkEye Packet Forensics (Wireshark)</div>
+            <div style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+              • <strong>Malware Carving:</strong> Carved 2,025,472-byte binary <code>tkraw_Protected99.exe</code> from Frame 207 HTTP stream.<br>
+              • <strong>Reconnaissance:</strong> Queried <code>bot.whatismyipaddress.com</code> returning victim NAT IP <code>173.66.146.112</code>.<br>
+              • <strong>7-Cycle Exfiltration:</strong> Strict ~10-min cadence (604s–606s) to <code>macwinlogistics.in:587</code> (IP <code>23.229.162.69</code>) via cleartext Base64 AUTH.
+            </div>
+            <div class="screenshot-frame" style="flex-grow: 1;">
+              <img src="../../HawkEye/screenshots/08_smtp_authentication.png" alt="Wireshark SMTP Authentication">
+              <div class="screenshot-caption">
+                <span>Wireshark Frame 3179: Cleartext Base64 SMTP Authentication</span>
+                <span style="color: #00f2fe;">24/24 Solved</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cyber-card" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card-label">Task 5: HTB Brutus Linux Host Forensics</div>
+            <div style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+              • <strong>SSH Dictionary Attack:</strong> Attacker IP <code>65.2.161.68</code> executed 48 failed logins in 9 seconds.<br>
+              • <strong>Compromise & Session:</strong> Root password guessed at 06:32:44 UTC, spawning interactive Session 37.<br>
+              • <strong>Backdoor & Timezone:</strong> Backdoor user <code>cyberjunkie</code> added to sudo group; normalized UTC wtmp epoch.
+            </div>
+            <div class="screenshot-frame" style="flex-grow: 1;">
+              <img src="../../Brutus/Evidence/HTB-Brutus-All-8-Tasks-Completed.png.png" alt="HTB Brutus Completion Proof Badge">
+              <div class="screenshot-caption">
+                <span>HackTheBox Sherlock Completion Badge</span>
+                <span style="color: #10b981;">8/8 Tasks Verified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 5: MULTI-STAGE APT & THREAT INTELLIGENCE (2:30 - 3:15) -->
+      <section class="scene" id="scene-5">
+        <h1 class="scene-title">Multi-Stage APT Simulation & SOAR Handover (Task 3)</h1>
+        <p class="scene-subtitle">5-Stage Kill Chain Detection, TheHive 5 Case Templates, MISP Event JSON, and YARA Rules</p>
+
+        <div class="cyber-card" style="margin-bottom: 20px;">
+          <div class="card-label">Adversary Attack Lifecycle Progression</div>
+          <div class="step-chain">
+            <div class="step-item active-step">
+              <div class="step-num">STAGE 1</div>
+              <div class="step-name">Initial Access</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Office macro spawning encoded PowerShell</div>
+            </div>
+            <div class="step-item active-step">
+              <div class="step-num">STAGE 2</div>
+              <div class="step-name">Persistence</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Windows Scheduled Task creation</div>
+            </div>
+            <div class="step-item active-step">
+              <div class="step-num">STAGE 3</div>
+              <div class="step-name">Privilege Escalation</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">SeDebugPrivilege token elevation</div>
+            </div>
+            <div class="step-item active-step">
+              <div class="step-num">STAGE 4</div>
+              <div class="step-name">Lateral Movement</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Remote WMI process spawn across subnet</div>
+            </div>
+            <div class="step-item active-step">
+              <div class="step-num">STAGE 5</div>
+              <div class="step-name">Data Exfiltration</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">High-frequency covert DNS TXT tunneling</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="cyber-card">
+            <div class="card-label">Python SIEM Detection Harness</div>
+            <div class="card-title">7 / 7 Staged Alerts Triggered</div>
+            <div class="card-body">Offline Python correlation detector triggered 7 high-fidelity alerts against normalized simulated APT telemetry with zero cluster requirement.</div>
+          </div>
+          <div class="cyber-card">
+            <div class="card-label">TheHive 5 Case Template</div>
+            <div class="card-title">NIST SP 800-61 Playbook</div>
+            <div class="card-body">JSON template containing standardized containment, eradication, and post-incident investigation task workflows.</div>
+          </div>
+          <div class="cyber-card">
+            <div class="card-label">MISP Threat Sharing & YARA</div>
+            <div class="card-title">RFC-Compliant Threat Intel</div>
+            <div class="card-body">MISP JSON with indexed IOC attributes paired with YARA signature <code>apt_training_marker.yar</code> for host scanning.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 6: CONCLUSION & REFLECTION (3:15 - 3:45) -->
+      <section class="scene" id="scene-6">
+        <h1 class="scene-title">Internship Synthesis & Technical Competencies</h1>
+        <p class="scene-subtitle">ElevanceSkills Cybersecurity SOC Analyst Internship Capstone Completion</p>
+
+        <div class="grid-3" style="margin-bottom: 25px;">
+          <div class="cyber-card">
+            <div class="card-label">Core Technical Toolkit</div>
+            <div class="card-title">Full SOC Stack Mastery</div>
+            <div class="card-body">• Wireshark Network Packet Forensics<br>• Linux Syslog &amp; utmp/wtmp Binary Analysis<br>• Sigma, ElastAlert &amp; Elastic Query DSL<br>• Custom ECS Telemetry Dashboarding</div>
+          </div>
+          <div class="cyber-card">
+            <div class="card-label">Engineering Synergy</div>
+            <div class="card-title">AI &amp; Data Science in SOC</div>
+            <div class="card-body">• Data normalization to Elastic Common Schema<br>• High-efficiency detection under strict RAM limits<br>• Statistical inter-arrival beaconing correlation<br>• Rigorous evidentiary classification</div>
+          </div>
+          <div class="cyber-card">
+            <div class="card-label">Verified Deliverables</div>
+            <div class="card-title">100% Submission Ready</div>
+            <div class="card-body">• 7 Complete PDF Technical Reports<br>• Verified Seven-Cycle PCAP Datasets<br>• Complete Evidence Integrity Catalogs<br>• Tested SIEM Correlation Rules</div>
+          </div>
+        </div>
+
+        <div class="cyber-card" style="text-align: center; padding: 25px; background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(0,242,254,0.1));">
+          <div style="font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px;">Thank You to ElevanceSkills & Mentors</div>
+          <p style="font-size: 15px; color: #94a3b8;">Aiswarya — Undergraduate in Artificial Intelligence &amp; Data Science | Jyothi Engineering College (Autonomous)</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Lower Third Teleprompter -->
+    <div class="lower-third">
+      <div class="speaker-avatar">AI</div>
+      <div class="teleprompter-text" id="teleprompter-caption">
+        Loading presentation narration...
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <footer class="controls-bar">
+      <button class="btn-control" id="btn-play-pause">▶ Play</button>
+      <button class="btn-control" id="btn-restart">↺ Restart</button>
+      <button class="btn-control" id="btn-test-15s" style="border-color: #f59e0b; color: #fcd34d;">⚡ 15s Test Mode</button>
+      <button class="btn-control" id="btn-audio-toggle" style="border-color: #10b981; color: #a7f3d0;">🔊 Voiceover: ON</button>
+
+      <div class="timeline-container">
+        <span class="time-label" id="time-display">00:00 / 03:45</span>
+        <div class="progress-bar-bg" id="progress-container">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="scene-nav-btns">
+        <button class="btn-scene active" data-scene="1">1</button>
+        <button class="btn-scene" data-scene="2">2</button>
+        <button class="btn-scene" data-scene="3">3</button>
+        <button class="btn-scene" data-scene="4">4</button>
+        <button class="btn-scene" data-scene="5">5</button>
+        <button class="btn-scene" data-scene="6">6</button>
+      </div>
+
+      <button class="btn-control" id="btn-fullscreen">⛶ Fullscreen</button>
+    </footer>
+  </div>
+
+  <!-- Test Mode Diagnostic Modal Overlay -->
+  <div id="test-modal" style="display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 7, 18, 0.92); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+    <div style="background: #0b1329; border: 2px solid #00f2fe; border-radius: 12px; padding: 36px 48px; max-width: 680px; box-shadow: 0 0 50px rgba(0, 242, 254, 0.3); text-align: left;">
+      <h2 style="color: #00f2fe; font-size: 22px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+        <span>✅</span> 15-Second Test Recording Diagnostic — PASS
+      </h2>
+      <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">
+        15-second system pre-flight check completed successfully. Ready for full recording.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 6px;">
+          <span style="color: #cbd5e1;">Video Resolution & Canvas Safe Frame</span>
+          <span style="color: #10b981; font-weight: 600;">1920×1080 (16:9 Full HD) [PASS]</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 6px;">
+          <span style="color: #cbd5e1;">Narration Audio & Subtitle Sync</span>
+          <span style="color: #10b981; font-weight: 600;">Synchronized (Speech + Captions) [PASS]</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 6px;">
+          <span style="color: #cbd5e1;">Scene Transition Engine</span>
+          <span style="color: #10b981; font-weight: 600;">0.5s CSS Smooth Crossfade [PASS]</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 6px;">
+          <span style="color: #cbd5e1;">Evidence Screenshot Assets</span>
+          <span style="color: #10b981; font-weight: 600;">Local Verified Paths Verified [PASS]</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 6px;">
+          <span style="color: #cbd5e1;">Windows Game Bar Capture Compatibility</span>
+          <span style="color: #00f2fe; font-weight: 600;">Shortcut: Win + Alt + R</span>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 14px;">
+        <button id="btn-close-test-modal" style="padding: 10px 22px; background: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 6px; cursor: pointer; font-size: 14px;">Close Test Modal</button>
+        <button id="btn-start-full-demo" style="padding: 10px 24px; background: linear-gradient(135deg, #2563eb, #00f2fe); color: #000; font-weight: 700; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Start Full Master Recording</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // Automated Presentation Controller & Subtitle Synchronization
+    // -------------------------------------------------------------
+    const TOTAL_DURATION = 225; // 3 minutes 45 seconds (225s)
+    let isTestMode = false;
+
+    const SCENES = [
+      { id: 1, name: "Scene 1: Introduction & Tri-Team Architecture", start: 0, end: 30 },
+      { id: 2, name: "Scene 2: Custom SIEM Dashboard (Task 6)", start: 30, end: 70 },
+      { id: 3, name: "Scene 3: Detection Engineering & Rule Validation (Task 2)", start: 70, end: 110 },
+      { id: 4, name: "Scene 4: HawkEye & Brutus Threat Forensics (Tasks 4 & 5)", start: 110, end: 150 },
+      { id: 5, name: "Scene 5: Multi-Stage APT Simulation & Incident Management (Task 3)", start: 150, end: 195 },
+      { id: 6, name: "Scene 6: Conclusion & Professional Reflection", start: 195, end: 225 }
+    ];
+
+    const SUBTITLES = [
+      { time: 0, text: '"Hello everyone. My name is Aiswarya, an undergraduate student pursuing <span class=\"highlight\">Artificial Intelligence and Data Science</span> at Jyothi Engineering College."', spoken: 'Hello everyone. My name is Aiswarya, an undergraduate student pursuing Artificial Intelligence and Data Science at Jyothi Engineering College.' },
+      { time: 9, text: '"Today, I am excited to present my final capstone portfolio for the <span class=\"highlight\">ElevanceSkills Cybersecurity SOC Analyst Internship</span>."', spoken: 'Today, I am excited to present my final capstone portfolio for the ElevanceSkills Cybersecurity SOC Analyst Internship.' },
+      { time: 18, text: '"Across six rigorous tasks, I simulated the operational lifecycle of a modern SOC—unifying <span class=\"highlight\">Red Team attack chains, Blue Team detection engineering and rule validation, and Purple Team mitigations</span>."', spoken: 'Across six rigorous tasks, I simulated the operational lifecycle of a modern SOC—unifying Red Team attack chains, Blue Team detection engineering and rule validation, and Purple Team mitigations.' },
+      { time: 30, text: '"To explore threat visualization under workstation memory limits, I built an interactive, <span class=\"highlight\">locally running SIEM dashboard application</span> with a lightweight Python backend under 30 megabytes RAM."', spoken: 'To explore threat visualization under workstation memory limits, I built an interactive, locally running SIEM dashboard application with a lightweight Python backend under 30 megabytes RAM.' },
+      { time: 46, text: '"The dashboard visualizes our project\'s offline event dataset of <span class=\"highlight\">seventy-nine normalized ECS records</span> structured across three attack pillars: brute-force, privilege escalation, and data exfiltration."', spoken: 'The dashboard visualizes our projects offline event dataset of seventy-nine normalized ECS records structured across three attack pillars: brute-force, privilege escalation, and data exfiltration.' },
+      { time: 59, text: '"With responsive client-side filtering, analysts can inspect event severity, isolate attacker IP addresses, and examine granular telemetry fields <span class=\"highlight\">without requiring heavy multi-node enterprise cluster infrastructure</span>."', spoken: 'With responsive client-side filtering, analysts can inspect event severity, isolate attacker IP addresses, and examine granular telemetry fields without requiring heavy multi-node enterprise cluster infrastructure.' },
+      { time: 70, text: '"In Task Two, I focused on <span class=\"highlight\">detection engineering and rule validation</span> targeting three widespread vectors: distributed credential stuffing, DNS tunneling, and obfuscated PowerShell."', spoken: 'In Task Two, I focused on detection engineering and rule validation targeting three widespread vectors: distributed credential stuffing, DNS tunneling, and obfuscated PowerShell.' },
+      { time: 84, text: '"To demonstrate multi-platform compatibility, each detection was authored as <span class=\"highlight\">custom detection rules and offline configurations</span> across Sigma YAML, ElastAlert Two, and Elasticsearch Query DSL."', spoken: 'To demonstrate multi-platform compatibility, each detection was authored as custom detection rules and offline configurations across Sigma YAML, ElastAlert Two, and Elasticsearch Query DSL.' },
+      { time: 98, text: '"Our automated validation script evaluated ten test log events, generating <span class=\"highlight\">four high-fidelity alerts for malicious sequences while maintaining zero false positives</span> on benign baseline activity."', spoken: 'Our automated validation script evaluated ten test log events, generating four high-fidelity alerts for malicious sequences while maintaining zero false positives on benign baseline activity.' },
+      { time: 110, text: '"Next, I performed root-cause packet forensics on the HawkEye keylogger intrusion, analyzing <span class=\"highlight\">4,003 packets in Wireshark</span> and carving the staged executable."', spoken: 'Next, I performed root-cause packet forensics on the HawkEye keylogger intrusion, analyzing 4,003 packets in Wireshark and carving the staged executable.' },
+      { time: 122, text: '"The malware established seven distinct exfiltration cycles at consistent ten-minute intervals to external mail relay <span class=\"highlight\">macwinlogistics.in on port 587</span> via cleartext Base64 authentication."', spoken: 'The malware established seven distinct exfiltration cycles at consistent ten-minute intervals to external mail relay macwinlogistics.in on port 587 via cleartext Base64 authentication.' },
+      { time: 135, text: '"In Task Five, I investigated Hack The Box Sherlock \'Brutus\', correlating Linux auth.log with binary wtmp databases to trace <span class=\"highlight\">48 rapid SSH brute-force attempts and backdoor creation</span>."', spoken: 'In Task Five, I investigated Hack The Box Sherlock Brutus, correlating Linux auth.log with binary wtmp databases to trace 48 rapid SSH brute-force attempts and backdoor creation.' },
+      { time: 150, text: '"In Task Three, I analyzed a multi-stage APT simulation progressing from <span class=\"highlight\">spear-phishing, scheduled tasks, privilege escalation, to remote WMI and DNS tunneling</span>."', spoken: 'In Task Three, I analyzed a multi-stage APT simulation progressing from spear-phishing, scheduled tasks, privilege escalation, to remote WMI and DNS tunneling.' },
+      { time: 167, text: '"Defensively, I engineered an offline SIEM detection harness that successfully detected all seven kill-chain milestones."', spoken: 'Defensively, I engineered an offline SIEM detection harness that successfully detected all seven kill-chain milestones.' },
+      { time: 176, text: '"To support structured incident response planning, I developed offline candidate configurations including <span class=\"highlight\">TheHive Five case templates, RFC-compliant MISP JSON events</span>, and custom YARA rules."', spoken: 'To support structured incident response planning, I developed offline candidate configurations including TheHive Five case templates, RFC-compliant MISP JSON events, and custom YARA rules.' },
+      { time: 195, text: '"This internship provided practical experience across modern SOC operations—combining <span class=\"highlight\">deep packet forensics, host log analysis, Sigma rules, and telemetry dashboard development</span>."', spoken: 'This internship provided practical experience across modern SOC operations—combining deep packet forensics, host log analysis, Sigma rules, and telemetry dashboard development.' },
+      { time: 209, text: '"By combining data science principles with cybersecurity, I developed high-efficiency workflows that deliver clear threat visibility even under resource-constrained environments."', spoken: 'By combining data science principles with cybersecurity, I developed high-efficiency workflows that deliver clear threat visibility even under resource-constrained environments.' },
+      { time: 219, text: '"<span class=\"highlight\">Thank you to ElevanceSkills for this invaluable opportunity. Thank you for watching.</span>"', spoken: 'Thank you to ElevanceSkills for this invaluable opportunity. Thank you for watching.' }
+    ];
+
+    let currentTime = 0;
+    let isPlaying = false;
+    let playInterval = null;
+    let audioEnabled = true;
+    let lastSpokenIndex = -1;
+
+    const playPauseBtn = document.getElementById("btn-play-pause");
+    const restartBtn = document.getElementById("btn-restart");
+    const test15sBtn = document.getElementById("btn-test-15s");
+    const audioToggleBtn = document.getElementById("btn-audio-toggle");
+    const timeDisplay = document.getElementById("time-display");
+    const progressBar = document.getElementById("progress-bar");
+    const progressContainer = document.getElementById("progress-container");
+    const teleprompter = document.getElementById("teleprompter-caption");
+    const currentSceneName = document.getElementById("current-scene-name");
+    const sceneCounter = document.getElementById("scene-counter");
+    const sceneNavBtns = document.querySelectorAll(".btn-scene");
+    const stageContainer = document.getElementById("stage-container");
+    const testModal = document.getElementById("test-modal");
+    const closeTestModalBtn = document.getElementById("btn-close-test-modal");
+    const startFullDemoBtn = document.getElementById("btn-start-full-demo");
+
+    function speakText(text) {
+      if (!audioEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+
+    function updatePresentation() {
+      // 1. Update Timer & Progress
+      const maxDuration = isTestMode ? 15 : TOTAL_DURATION;
+      timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(maxDuration)}`;
+      progressBar.style.width = `${(currentTime / maxDuration) * 100}%`;
+
+      // 2. Identify Active Scene
+      const activeScene = SCENES.find(s => currentTime >= s.start && currentTime < s.end) || SCENES[SCENES.length - 1];
+
+      // Update Scene DOM
+      document.querySelectorAll(".scene").forEach(s => s.classList.remove("active"));
+      const activeDom = document.getElementById(`scene-${activeScene.id}`);
+      if (activeDom) activeDom.classList.add("active");
+
+      // Update Nav Buttons & Header
+      currentSceneName.textContent = activeScene.name;
+      sceneCounter.textContent = `0${activeScene.id} / 06`;
+      sceneNavBtns.forEach(btn => {
+        btn.classList.toggle("active", parseInt(btn.dataset.scene) === activeScene.id);
+      });
+
+      // 3. Update Subtitle & Voiceover
+      let activeSubIndex = -1;
+      for (let i = SUBTITLES.length - 1; i >= 0; i--) {
+        if (currentTime >= SUBTITLES[i].time) {
+          activeSubIndex = i;
+          break;
+        }
+      }
+
+      if (activeSubIndex !== -1) {
+        teleprompter.innerHTML = SUBTITLES[activeSubIndex].text;
+        if (activeSubIndex !== lastSpokenIndex && isPlaying) {
+          lastSpokenIndex = activeSubIndex;
+          speakText(SUBTITLES[activeSubIndex].spoken);
+        }
+      }
+
+      // Check if finished
+      if (currentTime >= maxDuration) {
+        pausePresentation();
+        if (isTestMode) {
+          testModal.style.display = "flex";
+        }
+      }
+    }
+
+    function playPresentation() {
+      if (isPlaying) return;
+      isPlaying = true;
+      playPauseBtn.innerHTML = "❚❚ Pause";
+      playInterval = setInterval(() => {
+        const maxDuration = isTestMode ? 15 : TOTAL_DURATION;
+        if (currentTime < maxDuration) {
+          currentTime += 0.25;
+          updatePresentation();
+        } else {
+          pausePresentation();
+        }
+      }, 250);
+    }
+
+    function pausePresentation() {
+      isPlaying = false;
+      playPauseBtn.innerHTML = "▶ Play";
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      clearInterval(playInterval);
+    }
+
+    playPauseBtn.addEventListener("click", () => {
+      if (isPlaying) pausePresentation();
+      else playPresentation();
+    });
+
+    restartBtn.addEventListener("click", () => {
+      currentTime = 0;
+      lastSpokenIndex = -1;
+      updatePresentation();
+      playPresentation();
+    });
+
+    test15sBtn.addEventListener("click", () => {
+      pausePresentation();
+      isTestMode = true;
+      currentTime = 0;
+      lastSpokenIndex = -1;
+      testModal.style.display = "none";
+      updatePresentation();
+      playPresentation();
+    });
+
+    audioToggleBtn.addEventListener("click", () => {
+      audioEnabled = !audioEnabled;
+      if (!audioEnabled && ('speechSynthesis' in window)) {
+        window.speechSynthesis.cancel();
+      }
+      audioToggleBtn.innerHTML = audioEnabled ? "🔊 Voiceover: ON" : "🔇 Voiceover: OFF";
+      audioToggleBtn.style.color = audioEnabled ? "#a7f3d0" : "#94a3b8";
+    });
+
+    closeTestModalBtn.addEventListener("click", () => {
+      testModal.style.display = "none";
+      isTestMode = false;
+      currentTime = 0;
+      updatePresentation();
+    });
+
+    startFullDemoBtn.addEventListener("click", () => {
+      testModal.style.display = "none";
+      isTestMode = false;
+      currentTime = 0;
+      lastSpokenIndex = -1;
+      updatePresentation();
+      playPresentation();
+    });
+
+    progressContainer.addEventListener("click", (e) => {
+      const rect = progressContainer.getBoundingClientRect();
+      const clickPos = (e.clientX - rect.left) / rect.width;
+      const maxDuration = isTestMode ? 15 : TOTAL_DURATION;
+      currentTime = clickPos * maxDuration;
+      lastSpokenIndex = -1;
+      updatePresentation();
+    });
+
+    sceneNavBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        isTestMode = false;
+        const targetSceneId = parseInt(btn.dataset.scene);
+        const targetScene = SCENES.find(s => s.id === targetSceneId);
+        if (targetScene) {
+          currentTime = targetScene.start;
+          lastSpokenIndex = -1;
+          updatePresentation();
+        }
+      });
+    });
+
+    // Fullscreen scaling
+    function resizeStage() {
+      const scaleX = window.innerWidth / 1920;
+      const scaleY = window.innerHeight / 1080;
+      const scale = Math.min(scaleX, scaleY);
+      stageContainer.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener("resize", resizeStage);
+    resizeStage();
+
+    document.getElementById("btn-fullscreen").addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    // Background Canvas Ambient Network Animation
+    const canvas = document.getElementById("bg-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 1920;
+    canvas.height = 1080;
+
+    const particles = [];
+    for (let i = 0; i < 45; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 2 + 1
+      });
+    }
+
+    function animateNetwork() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(0, 242, 254, 0.4)";
+      ctx.strokeStyle = "rgba(37, 99, 235, 0.15)";
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (dist < 180) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateNetwork);
+    }
+    animateNetwork();
+
+    // Initial setup
+    updatePresentation();
+  </script>
+</body>
+</html>
+  </script>
+</body>
+</html>
