@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Technical report — ElevanceSkills SOC Analyst Internship Portfolio">
+<title>Technical Report | Aiswarya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#0b0f19;--panel:#111827;--line:#263244;--text:#e8edf5;--muted:#9ca3af;--accent:#38bdf8;--warn:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.75 Inter,system-ui,sans-serif}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.top{border-bottom:1px solid var(--line);background:linear-gradient(135deg,#111827,#0b0f19);padding:22px max(22px,calc((100% - 1120px)/2))}
+.back{font-size:.9rem;font-weight:600}.wrap{max-width:1120px;margin:38px auto;padding:0 22px;display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:30px}
+.hero,.article,.side section{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.hero{padding:30px;margin-bottom:20px}.eyebrow{color:var(--accent);font:600 .76rem 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.2;margin:10px 0}.intro{color:var(--muted);margin:0}
+.article{padding:clamp(22px,4vw,46px);min-width:0}.article h1{font-size:2rem}.article h2{font-size:1.5rem;margin:2.2em 0 .7em;padding-bottom:.45em;border-bottom:1px solid var(--line)}.article h3{font-size:1.18rem;margin:1.7em 0 .5em}.article p,.article li{color:#cbd5e1}.article ul,.article ol{padding-left:1.5em}.article li{margin:.35em 0}.article blockquote{margin:1.4em 0;padding:12px 18px;border-left:3px solid var(--warn);background:#fbbf240d;color:#d1d5db}.article pre{overflow:auto;padding:18px;background:#080d16;border:1px solid var(--line);border-radius:9px}.article code{font: .88em 'JetBrains Mono',monospace;background:#0b1220;padding:.15em .35em;border-radius:4px}.article pre code{background:none;padding:0}.article table{display:block;overflow:auto;border-collapse:collapse;width:100%;font-size:.9rem}.article th,.article td{border:1px solid var(--line);padding:9px 12px;text-align:left}.article th{background:#1e293b}.article img{max-width:100%;height:auto;border-radius:8px}.article hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+.side{position:sticky;top:22px;align-self:start}.side section{padding:18px;margin-bottom:14px}.side h3{font-size:.9rem;margin:0 0 10px}.side p{font-size:.82rem;color:var(--muted);margin:0}.side a{display:block;font-size:.84rem;padding:5px 0}.notice{color:var(--muted);font-size:.82rem;margin-top:20px}.error{color:#fca5a5}
+footer{max-width:1120px;margin:0 auto;padding:0 22px 40px;color:var(--muted);font-size:.82rem}
+@media(max-width:850px){.wrap{grid-template-columns:1fr}.side{position:static;order:-1}.side section{display:none}.side section:first-child{display:block}}
+</style>
+</head>
+<body>
+<header class="top"><a class="back" href="index.html">← Back to portfolio</a></header>
+<main class="wrap">
+<div>
+<section class="hero"><div class="eyebrow" id="task">ElevanceSkills • Technical report</div><h1 id="title">Loading report…</h1><p class="intro" id="subtitle">SOC Analyst Internship Portfolio</p></section>
+<article class="article" id="content" aria-live="polite">Loading report content…</article>
+</div>
+<aside class="side">
+<section><h3>In this report</h3><nav id="toc"><p>Sections will appear here.</p></nav></section>
+<section><h3>About this portfolio</h3><p>Technical findings and evidence are presented with their original context. Synthetic exercises, offline specifications and genuine lab artifacts are identified in the report.</p></section>
+</aside>
+</main>
+<footer>© 2026 Aiswarya · ElevanceSkills SOC Analyst Internship Portfolio</footer>
+<script>
+const reports={
+"task-1":{task:"TASK 01 · TRI-TEAM OPERATIONS",title:"HawkEye Red, Blue & Purple Team Analysis",path:"HawkEye/purple-team/purple-team-report.md",subtitle:"Attack analysis, defensive observations and Purple Team handover."},
+"task-2":{task:"TASK 02 · DETECTION ENGINEERING",title:"Custom SIEM Correlation Rules",path:"SIEM-Correlation-Rules/reports/Task-2-SIEM-Correlation-Rules-Report.md",subtitle:"Credential stuffing, DNS tunnelling and PowerShell detection."},
+"task-3":{task:"TASK 03 · INCIDENT RESPONSE",title:"Multi-Stage APT Incident Response",path:"APT-Simulation/reports/Task3-Final-Incident-Response-Report.md",subtitle:"A documented, synthetic multi-stage incident-response exercise."},
+"task-4":{task:"TASK 04 · NETWORK FORENSICS",title:"CyberDefenders HawkEye Investigation",path:"HawkEye/cyberdefenders-hawkeye/hawkeye-lab-report.md",subtitle:"Packet-level investigation of the HawkEye challenge capture."},
+"task-5":{task:"TASK 05 · HOST FORENSICS",title:"HTB Brutus SSH Forensics",path:"Brutus/reports/Task-5-HTB-Brutus-Lab-Report.md",subtitle:"Linux authentication and session timeline analysis."},
+"task-6":{task:"TASK 06 · DASHBOARD ENGINEERING",title:"Custom SIEM Dashboard",path:"SIEM-Dashboard/reports/Task-6-Custom-SIEM-Dashboard-Report.md",subtitle:"Local SOC dashboard, normalized events and verification."}
+};
+const key=new URLSearchParams(location.search).get("report"),r=reports[key],base=location.pathname.replace(/[^/]*$/,"");
+if(!r){document.getElementById("content").innerHTML='<p class="error">Report not found. Return to the portfolio and choose a report.</p>';}
+else{
+document.title=r.title+" | Aiswarya";
+document.getElementById("task").textContent=r.task;
+document.getElementById("title").textContent=r.title;
+document.getElementById("subtitle").textContent=r.subtitle;
+fetch(base+r.path).then(res=>{if(!res.ok)throw new Error("HTTP "+res.status);return res.text()}).then(md=>{
+if(!window.marked)throw new Error("Markdown renderer could not load.");
+marked.setOptions({gfm:true,breaks:false});
+document.getElementById("content").innerHTML=marked.parse(md);
+const content=document.getElementById("content"),heads=[...content.querySelectorAll("h2,h3")],nav=document.getElementById("toc");
+nav.innerHTML="";
+heads.forEach((h,i)=>{const id="section-"+i;h.id=id;const a=document.createElement("a");a.href="#"+id;a.textContent=h.textContent;a.style.paddingLeft=h.tagName==="H3"?"14px":"0";nav.appendChild(a)});
+if(!heads.length)nav.innerHTML="<p>Use the report headings to navigate the content.</p>";
+}).catch(err=>{document.getElementById("content").innerHTML='<p class="error">Could not load this report. '+err.message+'</p><p>Check your connection and try again.</p>'});
+}
+</script>
+</body></html>
