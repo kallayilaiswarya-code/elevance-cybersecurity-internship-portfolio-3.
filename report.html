@@ -1,67 +1,1058 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Technical report — ElevanceSkills SOC Analyst Internship Portfolio">
-<title>Technical Report | Aiswarya</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<style>
-:root{color-scheme:dark;--bg:#0b0f19;--panel:#111827;--line:#263244;--text:#e8edf5;--muted:#9ca3af;--accent:#38bdf8;--warn:#fbbf24}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.75 Inter,system-ui,sans-serif}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-.top{border-bottom:1px solid var(--line);background:linear-gradient(135deg,#111827,#0b0f19);padding:22px max(22px,calc((100% - 1120px)/2))}
-.back{font-size:.9rem;font-weight:600}.wrap{max-width:1120px;margin:38px auto;padding:0 22px;display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:30px}
-.hero,.article,.side section{background:var(--panel);border:1px solid var(--line);border-radius:14px}
-.hero{padding:30px;margin-bottom:20px}.eyebrow{color:var(--accent);font:600 .76rem 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
-h1{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.2;margin:10px 0}.intro{color:var(--muted);margin:0}
-.article{padding:clamp(22px,4vw,46px);min-width:0}.article h1{font-size:2rem}.article h2{font-size:1.5rem;margin:2.2em 0 .7em;padding-bottom:.45em;border-bottom:1px solid var(--line)}.article h3{font-size:1.18rem;margin:1.7em 0 .5em}.article p,.article li{color:#cbd5e1}.article ul,.article ol{padding-left:1.5em}.article li{margin:.35em 0}.article blockquote{margin:1.4em 0;padding:12px 18px;border-left:3px solid var(--warn);background:#fbbf240d;color:#d1d5db}.article pre{overflow:auto;padding:18px;background:#080d16;border:1px solid var(--line);border-radius:9px}.article code{font: .88em 'JetBrains Mono',monospace;background:#0b1220;padding:.15em .35em;border-radius:4px}.article pre code{background:none;padding:0}.article table{display:block;overflow:auto;border-collapse:collapse;width:100%;font-size:.9rem}.article th,.article td{border:1px solid var(--line);padding:9px 12px;text-align:left}.article th{background:#1e293b}.article img{max-width:100%;height:auto;border-radius:8px}.article hr{border:0;border-top:1px solid var(--line);margin:2em 0}
-.side{position:sticky;top:22px;align-self:start}.side section{padding:18px;margin-bottom:14px}.side h3{font-size:.9rem;margin:0 0 10px}.side p{font-size:.82rem;color:var(--muted);margin:0}.side a{display:block;font-size:.84rem;padding:5px 0}.notice{color:var(--muted);font-size:.82rem;margin-top:20px}.error{color:#fca5a5}
-footer{max-width:1120px;margin:0 auto;padding:0 22px 40px;color:var(--muted);font-size:.82rem}
-@media(max-width:850px){.wrap{grid-template-columns:1fr}.side{position:static;order:-1}.side section{display:none}.side section:first-child{display:block}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Technical report — ElevanceSkills SOC Analyst Internship Portfolio">
+  <title>Technical Report | Aiswarya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f19;
+      --panel: #111827;
+      --panel-hover: #1e293b;
+      --line: #1f2937;
+      --line-subtle: #162032;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #64748b;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+      --accent-dark: #0284c7;
+      --warn: #fbbf24;
+      --warn-bg: rgba(251, 191, 36, 0.08);
+      --success: #34d399;
+      --success-bg: rgba(52, 211, 153, 0.08);
+      --code-bg: #030712;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #7dd3fc;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(11, 15, 25, 0.9) 100%);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: var(--accent);
+      color: #0b0f19;
+      text-decoration: none;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Main Container Grid */
+    .wrap {
+      max-width: 1280px;
+      margin: 32px auto 60px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 36px;
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 36px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #2563eb, transparent);
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    h1.report-hero-title {
+      font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.25;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* Hero Meta Bar */
+    .hero-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      font-size: 0.85rem;
+    }
+
+    .meta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .meta-label {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .meta-value {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Mobile Quick Nav / ToC Drawer */
+    .mobile-toc-container {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+
+    .mobile-toc-container summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .mobile-toc-container summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .mobile-toc-container nav {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Main Article Container */
+    .article-container {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: clamp(24px, 4vw, 48px);
+      min-width: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Prevent duplicate first H1 rendered from Markdown */
+    .article-container > h1:first-child {
+      display: none;
+    }
+
+    /* Typography inside Report Body */
+    .article-container h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.015em;
+      margin: 2.4em 0 0.8em;
+      padding-bottom: 0.5em;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .article-container h2::before {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .article-container h2:first-of-type {
+      margin-top: 0.5em;
+    }
+
+    .article-container h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 1.8em 0 0.6em;
+    }
+
+    .article-container h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 1.4em 0 0.4em;
+    }
+
+    .article-container p {
+      color: #cbd5e1;
+      margin-bottom: 1.2em;
+      font-size: 0.98rem;
+    }
+
+    .article-container ul, .article-container ol {
+      margin: 0.8em 0 1.4em 1.6em;
+      color: #cbd5e1;
+    }
+
+    .article-container li {
+      margin: 0.4em 0;
+      font-size: 0.98rem;
+    }
+
+    .article-container strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .article-container em {
+      color: #94a3b8;
+    }
+
+    .article-container hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 2.8em 0;
+    }
+
+    /* Custom Callouts / Alerts */
+    .callout-box {
+      margin: 1.6em 0;
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      border-left: 4px solid var(--accent);
+      background: rgba(56, 189, 248, 0.05);
+      border-right: 1px solid var(--line);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .callout-important {
+      border-left-color: var(--warn);
+      background: var(--warn-bg);
+    }
+
+    .callout-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--warn);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout-body {
+      color: #e2e8f0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .callout-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Standard Markdown Blockquote */
+    .article-container blockquote {
+      margin: 1.6em 0;
+      padding: 16px 22px;
+      border-left: 4px solid var(--accent);
+      background: rgba(56, 189, 248, 0.04);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: #cbd5e1;
+    }
+
+    .article-container blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      margin: 1.6em 0;
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      background: #090e1a;
+      border-bottom: 1px solid var(--line);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+    }
+
+    .code-lang {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .copy-btn.copied {
+      background: rgba(52, 211, 153, 0.2);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .article-container pre {
+      margin: 0;
+      padding: 18px 20px;
+      overflow-x: auto;
+      background: transparent;
+      line-height: 1.5;
+    }
+
+    .article-container code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+    }
+
+    /* Inline Code */
+    p code, li code, td code {
+      background: #0d1527;
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 0.15em 0.45em;
+      border-radius: 4px;
+      font-size: 0.86em;
+      word-break: break-word;
+    }
+
+    /* Tables */
+    .table-container {
+      margin: 1.8em 0;
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #0a0f1d;
+    }
+
+    .article-container table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .article-container th {
+      background: #111a2e;
+      color: #f8fafc;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .article-container td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--line-subtle);
+      color: #cbd5e1;
+      vertical-align: top;
+    }
+
+    .article-container tr:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .article-container tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Evidence Figures & Images */
+    .report-figure {
+      margin: 2.2em 0;
+      background: #070b14;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .report-figure img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: #030712;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+
+    .report-figure a:hover img {
+      transform: scale(1.005);
+    }
+
+    .figure-caption {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      padding: 4px 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border-top: 1px solid var(--line-subtle);
+      margin-top: 4px;
+    }
+
+    .figure-caption span {
+      font-size: 0.95rem;
+    }
+
+    /* Sidebar Table of Contents */
+    .side-panel {
+      position: sticky;
+      top: 90px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .toc-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      max-height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toc-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toc-nav {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 4px;
+    }
+
+    .toc-nav a {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: 6px;
+      line-height: 1.4;
+      display: block;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      border-left: 2px solid transparent;
+    }
+
+    .toc-nav a:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .toc-nav a.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .side-info-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .side-info-card h4 {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    /* Footer */
+    footer.page-footer {
+      border-top: 1px solid var(--line);
+      background: #080d16;
+      margin-top: auto;
+      padding: 32px 0;
+      color: var(--text-dim);
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Error and Loading states */
+    .state-message {
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .state-error {
+      color: #f87171;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .wrap {
+        grid-template-columns: 1fr;
+        margin-top: 20px;
+      }
+
+      .side-panel {
+        display: none;
+      }
+
+      .mobile-toc-container {
+        display: block;
+      }
+
+      .hero-card {
+        padding: 24px;
+      }
+
+      .article-container {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
 <body>
-<header class="top"><a class="back" href="index.html">← Back to portfolio</a></header>
-<main class="wrap">
-<div>
-<section class="hero"><div class="eyebrow" id="task">ElevanceSkills • Technical report</div><h1 id="title">Loading report…</h1><p class="intro" id="subtitle">SOC Analyst Internship Portfolio</p></section>
-<article class="article" id="content" aria-live="polite">Loading report content…</article>
-</div>
-<aside class="side">
-<section><h3>In this report</h3><nav id="toc"><p>Sections will appear here.</p></nav></section>
-<section><h3>About this portfolio</h3><p>Technical findings and evidence are presented with their original context. Synthetic exercises, offline specifications and genuine lab artifacts are identified in the report.</p></section>
-</aside>
-</main>
-<footer>© 2026 Aiswarya · ElevanceSkills SOC Analyst Internship Portfolio</footer>
-<script>
-const reports={
-"task-1":{task:"TASK 01 · TRI-TEAM OPERATIONS",title:"HawkEye Red, Blue & Purple Team Analysis",path:"HawkEye/purple-team/purple-team-report.md",subtitle:"Attack analysis, defensive observations and Purple Team handover."},
-"task-2":{task:"TASK 02 · DETECTION ENGINEERING",title:"Custom SIEM Correlation Rules",path:"SIEM-Correlation-Rules/reports/Task-2-SIEM-Correlation-Rules-Report.md",subtitle:"Credential stuffing, DNS tunnelling and PowerShell detection."},
-"task-3":{task:"TASK 03 · INCIDENT RESPONSE",title:"Multi-Stage APT Incident Response",path:"APT-Simulation/reports/Task3-Final-Incident-Response-Report.md",subtitle:"A documented, synthetic multi-stage incident-response exercise."},
-"task-4":{task:"TASK 04 · NETWORK FORENSICS",title:"CyberDefenders HawkEye Investigation",path:"HawkEye/cyberdefenders-hawkeye/hawkeye-lab-report.md",subtitle:"Packet-level investigation of the HawkEye challenge capture."},
-"task-5":{task:"TASK 05 · HOST FORENSICS",title:"HTB Brutus SSH Forensics",path:"Brutus/reports/Task-5-HTB-Brutus-Lab-Report.md",subtitle:"Linux authentication and session timeline analysis."},
-"task-6":{task:"TASK 06 · DASHBOARD ENGINEERING",title:"Custom SIEM Dashboard",path:"SIEM-Dashboard/reports/Task-6-Custom-SIEM-Dashboard-Report.md",subtitle:"Local SOC dashboard, normalized events and verification."}
-};
-const key=new URLSearchParams(location.search).get("report"),r=reports[key],base=location.pathname.replace(/[^/]*$/,"");
-if(!r){document.getElementById("content").innerHTML='<p class="error">Report not found. Return to the portfolio and choose a report.</p>';}
-else{
-document.title=r.title+" | Aiswarya";
-document.getElementById("task").textContent=r.task;
-document.getElementById("title").textContent=r.title;
-document.getElementById("subtitle").textContent=r.subtitle;
-fetch(base+r.path).then(res=>{if(!res.ok)throw new Error("HTTP "+res.status);return res.text()}).then(md=>{
-if(!window.marked)throw new Error("Markdown renderer could not load.");
-marked.setOptions({gfm:true,breaks:false});
-document.getElementById("content").innerHTML=marked.parse(md);
-const content=document.getElementById("content"),heads=[...content.querySelectorAll("h2,h3")],nav=document.getElementById("toc");
-nav.innerHTML="";
-heads.forEach((h,i)=>{const id="section-"+i;h.id=id;const a=document.createElement("a");a.href="#"+id;a.textContent=h.textContent;a.style.paddingLeft=h.tagName==="H3"?"14px":"0";nav.appendChild(a)});
-if(!heads.length)nav.innerHTML="<p>Use the report headings to navigate the content.</p>";
-}).catch(err=>{document.getElementById("content").innerHTML='<p class="error">Could not load this report. '+err.message+'</p><p>Check your connection and try again.</p>'});
-}
-</script>
-</body></html>
+
+  <!-- Top Sticky Navigation -->
+  <header class="top-header">
+    <div class="header-inner">
+      <a class="back-btn" href="index.html">← Back to Portfolio</a>
+      <div class="header-brand">
+        <span class="brand-badge">SOC Capstone</span>
+        <span class="brand-sub">ElevanceSkills Cybersecurity</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Report Body -->
+  <main class="wrap">
+    <div>
+      <!-- Hero Banner -->
+      <section class="hero-card">
+        <div class="eyebrow" id="report-task">Loading task...</div>
+        <h1 class="report-hero-title" id="report-title">Loading report...</h1>
+        <p class="hero-subtitle" id="report-subtitle">SOC Analyst Internship Portfolio</p>
+
+        <div class="hero-meta-bar">
+          <div class="meta-group">
+            <span class="meta-label">Author</span>
+            <span class="meta-value">Aiswarya (B.Tech AI & Data Science)</span>
+          </div>
+          <div class="meta-group">
+            <span class="meta-label">Program</span>
+            <span class="meta-value">ElevanceSkills SOC Analyst</span>
+          </div>
+          <div class="meta-group">
+            <span class="meta-label">Institution</span>
+            <span class="meta-value">Jyothi Engineering College</span>
+          </div>
+          <div class="meta-group">
+            <span class="meta-label">Classification</span>
+            <span class="meta-value" style="color: var(--accent); font-family: 'JetBrains Mono', monospace;">TLP:CLEAR</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mobile Dropdown ToC -->
+      <details class="mobile-toc-container" id="mobile-toc-drawer">
+        <summary><span>📑</span> Jump to Section in this Report</summary>
+        <nav id="mobile-toc-links"></nav>
+      </details>
+
+      <!-- Rendered Article -->
+      <article class="article-container" id="content" aria-live="polite">
+        <div class="state-message">Loading technical report content...</div>
+      </article>
+    </div>
+
+    <!-- Sticky Desktop Sidebar -->
+    <aside class="side-panel">
+      <div class="toc-card">
+        <div class="toc-title">
+          <span>In This Report</span>
+          <span style="color: var(--accent); font-size: 0.75rem;">ToC</span>
+        </div>
+        <nav class="toc-nav" id="toc">
+          <p style="font-size: 0.8rem; color: var(--text-dim);">Generating sections...</p>
+        </nav>
+      </div>
+
+      <div class="side-info-card">
+        <h4>Evidentiary Integrity</h4>
+        <p>Technical findings and forensic artifacts are presented with verified evidentiary provenance. Genuine lab challenges, synthetic simulations, and candidate configurations are clearly identified.</p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="footer-inner">
+      <div>© 2026 Aiswarya · ElevanceSkills SOC Analyst Internship Portfolio</div>
+      <div style="font-size: 0.78rem;">Autonomous Portfolio Staging · Grounded in Empirical Telemetry & Defense Engineering</div>
+    </div>
+  </footer>
+
+  <script>
+    // -------------------------------------------------------------
+    // Global Report Registry
+    // -------------------------------------------------------------
+    const reports = {
+      "task-1": {
+        task: "Task 01 • Tri-Team Operations",
+        title: "HawkEye Red, Blue & Purple Team Analysis",
+        path: "HawkEye/purple-team/purple-team-report-presentation.md",
+        fallbackPath: "HawkEye/purple-team/purple-team-report.md",
+        subtitle: "Adversary tradecraft emulation, defensive detection mapping, and collaborative Purple Team mitigations."
+      },
+      "task-2": {
+        task: "Task 02 • Detection Engineering",
+        title: "Custom SIEM Correlation Rules",
+        path: "SIEM-Correlation-Rules/reports/Task-2-SIEM-Correlation-Rules-Report-presentation.md",
+        fallbackPath: "SIEM-Correlation-Rules/reports/Task-2-SIEM-Correlation-Rules-Report.md",
+        subtitle: "Detection engineering targeting Credential Stuffing, DNS Tunneling, and Obfuscated PowerShell across Sigma, ElastAlert, and Elastic Query DSL."
+      },
+      "task-3": {
+        task: "Task 03 • Incident Response",
+        title: "Multi-Stage APT Incident Response",
+        path: "APT-Simulation/reports/Task3-Final-Incident-Response-Report-presentation.md",
+        fallbackPath: "APT-Simulation/reports/Task3-Final-Incident-Response-Report.md",
+        subtitle: "Simulated 5-stage APT intrusion lifecycle structured under NIST SP 800-61 with TheHive case templates and MISP threat sharing."
+      },
+      "task-4": {
+        task: "Task 04 • Network Forensics",
+        title: "CyberDefenders HawkEye Investigation",
+        path: "HawkEye/cyberdefenders-hawkeye/hawkeye-lab-report-presentation.md",
+        fallbackPath: "HawkEye/cyberdefenders-hawkeye/hawkeye-lab-report.md",
+        subtitle: "Deep packet inspection of a 4,003-packet capture: executable carving, reconnaissance discovery, and 7-cycle SMTP beaconing."
+      },
+      "task-5": {
+        task: "Task 05 • Host Forensics",
+        title: "HTB Brutus SSH Forensics",
+        path: "Brutus/reports/Task-5-HTB-Brutus-Lab-Report-presentation.md",
+        fallbackPath: "Brutus/reports/Task-5-HTB-Brutus-Lab-Report.md",
+        subtitle: "Linux authentication log and binary wtmp forensic analysis tracing 48 failed SSH attempts, root compromise, and local persistence."
+      },
+      "task-6": {
+        task: "Task 06 • Dashboard Engineering",
+        title: "Custom 3-Pillar SIEM Dashboard",
+        path: "SIEM-Dashboard/reports/Task-6-Custom-SIEM-Dashboard-Report-presentation.md",
+        fallbackPath: "SIEM-Dashboard/reports/Task-6-Custom-SIEM-Dashboard-Report.md",
+        subtitle: "Multi-pillar threat visualization across 79 ECS-normalized events utilizing a zero-dependency Python server and Kibana 8.x specifications."
+      }
+    };
+
+    // Global copy helper for code blocks
+    function copyCode(id, btn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = "✓ Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "Copy";
+          btn.classList.remove("copied");
+        }, 2000);
+      }).catch(() => {
+        btn.textContent = "Error";
+      });
+    }
+
+    // Determine current report
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportKey = urlParams.get("report") || "task-4";
+    const reportConfig = reports[reportKey];
+    const base = window.location.pathname.replace(/[^/]*$/, "");
+
+    if (!reportConfig) {
+      document.getElementById("content").innerHTML = `
+        <div class="state-message state-error">
+          <h3>Report Identifier Not Found</h3>
+          <p>The specified report key "<code>${reportKey}</code>" was not found in the portfolio directory.</p>
+          <p style="margin-top: 15px;"><a class="back-btn" href="index.html">Return to Portfolio Overview</a></p>
+        </div>
+      `;
+    } else {
+      document.title = `${reportConfig.title} | Aiswarya`;
+      document.getElementById("report-task").textContent = reportConfig.task;
+      document.getElementById("report-title").textContent = reportConfig.title;
+      document.getElementById("report-subtitle").textContent = reportConfig.subtitle;
+
+      // Custom Markdown Renderer with Path Resolution & Visual Enhancement
+      function setupCustomRenderer(activeReportPath) {
+        const renderer = {
+          // Resolve relative image paths (supporting both marked v4 and v5+ token signatures)
+          image(hrefOrToken, maybeTitle, maybeText) {
+            let href, title, text;
+            if (typeof hrefOrToken === "object" && hrefOrToken !== null) {
+              href = hrefOrToken.href;
+              title = hrefOrToken.title;
+              text = hrefOrToken.text;
+            } else {
+              href = hrefOrToken;
+              title = maybeTitle;
+              text = maybeText;
+            }
+
+            let finalHref = href || "";
+            if (finalHref && !finalHref.startsWith("http://") && !finalHref.startsWith("https://") && !finalHref.startsWith("/") && !finalHref.startsWith("data:")) {
+              const dir = activeReportPath.substring(0, activeReportPath.lastIndexOf("/") + 1);
+              finalHref = base + dir + finalHref;
+            }
+            const caption = title || text || "";
+            return `
+              <figure class="report-figure">
+                <a href="${finalHref}" target="_blank" title="Click to open image in high resolution">
+                  <img src="${finalHref}" alt="${text || ''}" loading="lazy">
+                </a>
+                ${caption ? `<figcaption class="figure-caption"><span>📷</span> ${caption}</figcaption>` : ''}
+              </figure>
+            `;
+          },
+          // Code block with language tag and copy button
+          code(codeOrToken, maybeInfostring) {
+            let code, infostring;
+            if (typeof codeOrToken === "object" && codeOrToken !== null) {
+              code = codeOrToken.text || "";
+              infostring = codeOrToken.lang || "";
+            } else {
+              code = codeOrToken || "";
+              infostring = maybeInfostring || "";
+            }
+
+            const lang = (infostring || "text").trim().toUpperCase();
+            const codeId = "code-" + Math.random().toString(36).substring(2, 9);
+            // escape basic HTML chars in code
+            const safeCode = code
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+
+            return `
+              <div class="code-block-wrapper">
+                <div class="code-header">
+                  <span class="code-lang">${lang}</span>
+                  <button class="copy-btn" onclick="copyCode('${codeId}', this)">Copy</button>
+                </div>
+                <pre><code id="${codeId}" class="language-${lang.toLowerCase()}">${safeCode}</code></pre>
+              </div>
+            `;
+          }
+        };
+
+        marked.use({ renderer });
+      }
+
+      // Convert GitHub Callout syntax (> [!IMPORTANT] ...) to styled boxes
+      function formatAlertBoxes(md) {
+        return md.replace(/>\s*\[!(IMPORTANT|NOTE|WARNING|TIP|CAUTION)\]\s*\n([\s\S]*?)(?=\n\n|\n[^\s>]|$)/gi, (match, type, content) => {
+          const cleanType = type.toUpperCase();
+          const cleanContent = content.replace(/^>\s?/gm, '').trim();
+          const isWarn = cleanType === 'IMPORTANT' || cleanType === 'WARNING' || cleanType === 'CAUTION';
+          return `
+<div class="callout-box ${isWarn ? 'callout-important' : ''}">
+  <div class="callout-title">${cleanType === 'IMPORTANT' ? '⚠️ IMPORTANT DISCLOSURE' : 'ℹ️ ' + cleanType}</div>
+  <div class="callout-body">
+    ${cleanContent}
+  </div>
+</div>\n`;
+        });
+      }
+
+      // Fetch with fallback logic
+      function loadReportMarkdown(primaryPath, fallbackPath) {
+        fetch(base + primaryPath)
+          .then(res => {
+            if (!res.ok) {
+              if (fallbackPath) {
+                console.warn(`Primary path ${primaryPath} not found (HTTP ${res.status}). Attempting fallback: ${fallbackPath}`);
+                return fetch(base + fallbackPath).then(fbRes => {
+                  if (!fbRes.ok) throw new Error(`HTTP ${fbRes.status} for fallback`);
+                  setupCustomRenderer(fallbackPath);
+                  return fbRes.text();
+                });
+              }
+              throw new Error(`HTTP ${res.status}`);
+            }
+            setupCustomRenderer(primaryPath);
+            return res.text();
+          })
+          .then(md => {
+            if (!window.marked) throw new Error("Markdown parser library (marked.js) could not be loaded.");
+
+            marked.setOptions({ gfm: true, breaks: false });
+            const processedMd = formatAlertBoxes(md);
+            const contentEl = document.getElementById("content");
+            contentEl.innerHTML = marked.parse(processedMd);
+
+            // Wrap tables in responsive overflow containers
+            contentEl.querySelectorAll("table").forEach(tbl => {
+              if (!tbl.parentElement.classList.contains("table-container")) {
+                const wrapper = document.createElement("div");
+                wrapper.className = "table-container";
+                tbl.parentNode.insertBefore(wrapper, tbl);
+                wrapper.appendChild(tbl);
+              }
+            });
+
+            // Generate Table of Contents
+            const headings = [...contentEl.querySelectorAll("h2, h3")];
+            const tocNav = document.getElementById("toc");
+            const mobileTocNav = document.getElementById("mobile-toc-links");
+            tocNav.innerHTML = "";
+            mobileTocNav.innerHTML = "";
+
+            if (headings.length === 0) {
+              tocNav.innerHTML = `<p style="font-size: 0.8rem; color: var(--text-dim);">No sub-sections found.</p>`;
+            } else {
+              headings.forEach((h, index) => {
+                const sectionId = "section-" + (index + 1);
+                h.id = sectionId;
+
+                // Desktop ToC link
+                const desktopLink = document.createElement("a");
+                desktopLink.href = "#" + sectionId;
+                desktopLink.textContent = h.textContent;
+                if (h.tagName === "H3") {
+                  desktopLink.style.paddingLeft = "20px";
+                  desktopLink.style.fontSize = "0.78rem";
+                }
+                tocNav.appendChild(desktopLink);
+
+                // Mobile ToC link
+                const mobileLink = document.createElement("a");
+                mobileLink.href = "#" + sectionId;
+                mobileLink.textContent = (h.tagName === "H3" ? "— " : "") + h.textContent;
+                mobileLink.onclick = () => {
+                  document.getElementById("mobile-toc-drawer").open = false;
+                };
+                mobileTocNav.appendChild(mobileLink);
+              });
+
+              // ScrollSpy for Desktop ToC
+              const observerOptions = {
+                root: null,
+                rootMargin: "0px 0px -65% 0px",
+                threshold: 0
+              };
+
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    document.querySelectorAll(".toc-nav a").forEach(a => {
+                      a.classList.toggle("active", a.getAttribute("href") === "#" + id);
+                    });
+                  }
+                });
+              }, observerOptions);
+
+              headings.forEach(h => observer.observe(h));
+            }
+          })
+          .catch(err => {
+            document.getElementById("content").innerHTML = `
+              <div class="state-message state-error">
+                <h3>Failed to Load Report</h3>
+                <p>${err.message}</p>
+                <p style="margin-top: 15px;"><a class="back-btn" href="index.html">Return to Portfolio Overview</a></p>
+              </div>
+            `;
+          });
+      }
+
+      loadReportMarkdown(reportConfig.path, reportConfig.fallbackPath);
+    }
+  </script>
+</body>
+</html>
