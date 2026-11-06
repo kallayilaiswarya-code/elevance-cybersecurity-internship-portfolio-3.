@@ -66,8 +66,8 @@ sequenceDiagram
     Note over V,S: Phase 1: Malware Ingress
     V->>D: DNS Query: proforma-invoices.com (Frame 204)
     D-->>V: DNS A Record: 217.182.138.150 (Frame 206)
-    V->>S: HTTP GET /proforma/tkraw_Protected99.exe (Frame 207)
-    S-->>V: HTTP 200 OK (PE Binary Carved, 2,025,472 B) (Frames 208-3155)
+    V->>S: HTTP GET /proforma/tkraw_Protected99.exe (Frame 210; TCP Handshake: Frames 207-209)
+    S-->>V: HTTP 200 OK in Frame 212 (PE Binary Carved: Frames 214-3155, 2,025,472 B)
 
     Note over V,W: Phase 2: External IP Reconnaissance
     V->>D: DNS Query: bot.whatismyipaddress.com (Frame 3159)
@@ -86,7 +86,7 @@ sequenceDiagram
     Note over V,M: Client Bypasses STARTTLS (No TLS Negotiation; 100% Plaintext Dialogue)
     V->>M: AUTH LOGIN (Base64 User: sales.del@macwinlogistics.in) (Frame 3179)
     M-->>V: 334 UGFzc3dvcmQ6 (Frame 3181)
-    V->>M: U2FsZXNAMjM= (Base64 Pass: Sales@23) (Frame 3182)
+    V->>M: U2FsZXNAMjM= (Base64 Pass: [REDACTED_LAB_PASSWORD]) (Frame 3182)
     M-->>V: 235 Authentication succeeded (Frame 3184)
     V->>M: MAIL FROM / RCPT TO / DATA (Frames 3185-3193)
     V->>M: DATA: HawkEye Reborn v9 Exfil Payload (Frame 3194)
@@ -164,7 +164,7 @@ A critical forensic determination is whether the exfiltration session is cryptog
 4. **Base64 Authentication Encoding (Not Encryption):**
    - Username (Frame 3179): `c2FsZXMuZGVsQG1hY3dpbmxvZ2lzdGljcy5pbg==` decodes directly to **`sales.del@macwinlogistics.in`**.
    - Server challenge (Frame 3181): `UGFzc3dvcmQ6` decodes to `Password:`.
-   - Password (Frame 3182): `U2FsZXNAMjM=` decodes directly to **`Sales@23`**.
+   - Password (Frame 3182): `U2FsZXNAMjM=` decodes directly to **`[REDACTED_LAB_PASSWORD]`**.
    - *Technical Note:* Base64 is an RFC 4648 binary-to-text representation scheme providing zero cryptographic confidentiality. Any inline sensor or packet capture tool can immediately decode credentials on the wire.
 5. **Inspectable Email Payload (Frame 3194):** The transmitted MIME message and keylogger body (`Subject: =?utf-8?B?...`) are entirely cleartext Base64 MIME parts. Keystrokes, machine credentials (`oman.mcguire`), and host metadata (`Windows NT 6.1`, `173.66.146.112`) are directly reconstructible without cryptographic key material.
 
@@ -201,7 +201,7 @@ To maintain forensic integrity, analytical findings are explicitly bifurcated ac
 |    (Empirical PCAP Ground Truth)   |    (Corroborated by Payload)   |    (Requires Host Telemetry)|
 +------------------------------------+--------------------------------+-----------------------------+
 | • HTTP GET download of PE binary   | • Malware payload execution    | • Initial phishing email    |
-|   tkraw_Protected99.exe (Fr. 207). |   occurred on victim machine   |   delivery lure (capture    |
+|   tkraw_Protected99.exe (Fr. 210; SYN Fr. 207). |   occurred on victim machine   |   delivery lure (capture    |
 | • DNS resolution & HTTP IP echo    |   (inferred from subsequent    |   begins at HTTP download). |
 |   returning 173.66.146.112.        |   exfiltration telemetry).     | • Process spawn mechanism   |
 | • Cleartext Base64 SMTP login to   | • System info & passwords were |   (double-click vs script). |
@@ -229,7 +229,7 @@ Every mapped ATT&CK technique is categorized by evidentiary basis:
 
 | MITRE ATT&CK TTP | Description | Evidentiary Basis in Capture | Classification |
 |---|---|---|:---:|
-| **T1105** | Ingress Tool Transfer | HTTP GET `/proforma/tkraw_Protected99.exe` in Frame 207 | **Directly Observed on Wire** |
+| **T1105** | Ingress Tool Transfer | HTTP GET `/proforma/tkraw_Protected99.exe` in Frame 210 (Handshake: Frames 207-209; Payload: Frames 214-3155) | **Directly Observed on Wire** |
 | **T1016** | System Network Config Discovery | DNS & HTTP query to `bot.whatismyipaddress.com` in Frames 3159–3166 | **Directly Observed on Wire** |
 | **T1071.003** | Mail Protocols | Exfiltration over SMTP on port 587 to `23.229.162.69` | **Directly Observed on Wire** |
 | **T1041** | Exfiltration Over C2 Channel | Transmission of exfiltration email in Frame 3194 | **Directly Observed on Wire** |

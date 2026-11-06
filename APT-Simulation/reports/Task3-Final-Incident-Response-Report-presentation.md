@@ -30,12 +30,24 @@ Using a lightweight, zero-dependency Python correlation engine ([`siem_engine.py
 | **Incident Category** | Simulated APT Campaign | Multi-stage intrusion modeling MITRE ATT&CK techniques |
 | **Primary Target (Patient Zero)** | `LAB-WIN01` | Fictional Windows 11 endpoint (User: `student`) |
 | **Secondary Target (Lateral)** | `LAB-SRV01` | Fictional internal application/file server |
-| **External Source Address** | `192.0.2.50` | RFC 5737 TEST-NET-1 documentation range (safe IP) |
+| **External Source Address** | `192.0.2.50` | RFC 5737 TEST-NET-1 documentation range (safe IP; serves as external C2 server and synthetic campaign correlation identifier) |
 | **Simulated C2 Infrastructure** | `exfil.training.lab` | Fictional destination domain for DNS exfiltration |
 | **Telemetry Ingestion Tier** | Synthetic ECS JSONL | Windows Security Event IDs 4688, 4672, 4624 & Sysmon IDs 1, 22 |
 | **Detection Engine** | Lightweight Python SIEM | Standard-library correlation & Lucene query evaluator |
 
 ---
+
+
+
+---
+
+### Architectural Scope & Tooling Classification (Host Memory Bounds)
+In alignment with workstation constraints (7.67 GB RAM) and SOC evidentiary integrity:
+- **Simulation Execution:** Implemented strictly using lightweight, offline Python engines ([`siem_engine.py`](../../APT-Simulation/simulation/siem_engine.py) and [`detect_apt.py`](../../APT-Simulation/simulation/detect_apt.py)) evaluating 12 ECS-normalized events against 7 modular Sigma rules.
+- **Threat Intelligence & SOAR Deliverables:** Candidate import templates for MISP (`misp-training-event.json`) and TheHive 5 (`thehive-case-template.json`) were authored and validated offline via [`validate_templates.py`](../../APT-Simulation/simulation/validate_templates.py). Neither live TheHive/Cortex servers nor live MISP instances were deployed.
+- **Enterprise IDS/SIEM:** No live Security Onion virtual machines or Wazuh servers/agents were executed.
+- **Offensive TTP Modeling:** Lateral movement was modeled via `wmic.exe process call create` (Logon Type 3); no live penetration testing utilities (such as PsExec or Pass-the-Hash) were executed.
+- **Synthetic IP Allocation (RFC 5737):** Address `192.0.2.50` belongs to TEST-NET-1 and was utilized as a unified adversary infrastructure address and synthetic campaign correlation tag across test event records.
 
 ## 3. Incident Response Lifecycle (NIST SP 800-61r2)
 
@@ -61,7 +73,7 @@ The correlation engine evaluated 12 synthetic events and produced 7 alert record
 | **3** | **T1053.005** Scheduled Task | `LAB-WIN01` | `schtasks.exe` creates task `WindowsUpdateCheck` targeting `updater.ps1` as `SYSTEM`. | **MEDIUM** |
 | **4** | **T1078 / T1134** Privilege Escalation | `LAB-WIN01` | Windows Event ID 4672: `SeDebugPrivilege` assigned to non-admin user `student`. | **HIGH** |
 | **5** | **T1047** Remote Management (WMI) | `LAB-SRV01` | Network logon 4624 Type 3 from `LAB-WIN01`; WMI spawns remote directory reconnaissance. | **HIGH** |
-| **6** | **T1071.004** DNS Tunneling Exfiltration | `LAB-SRV01` | Sysmon Event ID 22 logs 68-character DNS TXT query transmitting Base64 data to `exfil.training.lab`. | **HIGH** |
+| **6** | **T1071.004** DNS Tunneling Exfiltration | `LAB-SRV01` | Sysmon Event ID 22 logs 63-character DNS TXT query (44-character Base64 payload + .exfil.training.lab) transmitting Base64 data to `exfil.training.lab`. | **HIGH** |
 
 #### Detailed Stage-by-Stage Analysis:
 
@@ -109,7 +121,7 @@ The correlation engine evaluated 12 synthetic events and produced 7 alert record
 
 * **Stage 6: Exfiltration (Event `APT-POS-006` | 09:16:05 UTC | `LAB-SRV01`):**
   - *Observed Telemetry:* Sysmon Event ID 22 logged DNS query:
-    `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab` (Query Type: `TXT`, Length: `68`).
+    `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx.exfil.training.lab` (Query Type: `TXT`, Length: `63`).
   - *Deobfuscated Subdomain:* `dGVzdC1kYXRhLWV4ZmlsdHJhdGlvbi1zYW1wbGUtMDAx` decodes to: `test-data-exfiltration-sample-001`.
   - *MITRE ATT&CK:* [T1071.004 DNS](https://attack.mitre.org/techniques/T1071/004/) & [T1048 Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/)
   - *Detection Logic:* Sigma rule `stage6-exfiltration-dns-tunneling.yml`.
@@ -154,14 +166,14 @@ Recommended containment actions for deployment in an active intrusion:
 
 ## 4. Chronological Incident Timeline
 
-| Timestamp (UTC) | Event ID | Host | MITRE ATT&CK | Incident Event & Context |
+| Timestamp (UTC, 2026-10-13) | Event ID | Host | MITRE ATT&CK | Incident Event & Context |
 | :---: | :--- | :--- | :--- | :--- |
-| **09:00:15** | `APT-POS-001` | `LAB-WIN01` | T1566.001 / T1059.001 | User opens `invoice_march2026.docm`; `WINWORD.EXE` spawns hidden PowerShell script in Temp. |
-| **09:02:30** | `APT-POS-002` | `LAB-WIN01` | T1059.001 / T1027 | PowerShell executes Base64 command downloading payload `a.ps1` from `192.0.2.50`. |
-| **09:05:10** | `APT-POS-003` | `LAB-WIN01` | T1053.005 | `schtasks.exe` creates task `WindowsUpdateCheck` targeting `updater.ps1` with SYSTEM logon trigger. |
-| **09:08:45** | `APT-POS-004` | `LAB-WIN01` | T1078 / T1134 | Event ID 4672: Non-admin user `student` assigned `SeDebugPrivilege` via UAC consent bypass. |
-| **09:12:20** | `APT-POS-005` | `LAB-SRV01` | T1047 / T1021.002 | Network Logon 4624 Type 3 from `LAB-WIN01` to `LAB-SRV01`; WMI spawns remote directory scan. |
-| **09:16:05** | `APT-POS-006` | `LAB-SRV01` | T1071.004 / T1048 | Sysmon 22 logs 68-character DNS TXT query transmitting Base64 data to `exfil.training.lab`. |
+| **2026-10-13 09:00:15** | `APT-POS-001` | `LAB-WIN01` | T1566.001 / T1059.001 | User opens `invoice_march2026.docm`; `WINWORD.EXE` spawns hidden PowerShell script in Temp. |
+| **2026-10-13 09:02:30** | `APT-POS-002` | `LAB-WIN01` | T1059.001 / T1027 | PowerShell executes Base64 command downloading payload `a.ps1` from `192.0.2.50`. |
+| **2026-10-13 09:05:10** | `APT-POS-003` | `LAB-WIN01` | T1053.005 | `schtasks.exe` creates task `WindowsUpdateCheck` targeting `updater.ps1` with SYSTEM logon trigger. |
+| **2026-10-13 09:08:45** | `APT-POS-004` | `LAB-WIN01` | T1078 / T1134 | Event ID 4672: Non-admin user `student` assigned `SeDebugPrivilege` via UAC consent bypass. |
+| **2026-10-13 09:12:20** | `APT-POS-005` | `LAB-SRV01` | T1047 / T1021.002 | Network Logon 4624 Type 3 from `LAB-WIN01` to `LAB-SRV01`; WMI spawns remote directory scan. |
+| **2026-10-13 09:16:05** | `APT-POS-006` | `LAB-SRV01` | T1071.004 / T1048 | Sysmon 22 logs 63-character DNS TXT query (44-character Base64 payload + .exfil.training.lab) transmitting Base64 data to `exfil.training.lab`. |
 
 ---
 

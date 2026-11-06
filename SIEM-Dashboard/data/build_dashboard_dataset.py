@@ -297,7 +297,7 @@ for idx, t in enumerate(hawkeye_times, 1):
         "mitre_attack_technique": "Exfiltration Over Alternative Protocol: Exfiltration Over Unencrypted/Obfuscated Non-C2 Protocol",
         "data_provenance": "Lab Challenge Telemetry (HawkEye stealer.pcap)",
         "synthetic_flag": False,
-        "details": f"PERIODIC SMTP EXFILTRATION: Keylogger credential log exfiltrated to mail.winlogistics.in (Burst #{idx}, ~10-min interval)"
+        "details": f"PERIODIC SMTP EXFILTRATION: Keylogger credential log exfiltrated to macwinlogistics.in (Burst #{idx}, ~10-min interval)"
     })
 
 # Write out standardized dataset

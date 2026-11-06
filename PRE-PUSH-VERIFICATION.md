@@ -61,7 +61,7 @@ An exhaustive regex scan was conducted across all 95 files in the public staging
 
 $$\mathbf{Total\; Credential\; or\; Token\; Findings\; in\; Public\; Staging} = \mathbf{0}$$
 
-- **Lab Challenge Passwords:** All challenge credentials identified during analysis (`Sales@23`, `P@ssw0rd$`, base64 strings) were systematically masked with `[REDACTED_LAB_PASSWORD]`, `[REDACTED_BASE64_USER]`, and `[REDACTED_BASE64_PASSWORD]`.
+- **Lab Challenge Passwords:** All challenge credentials identified during analysis (`[REDACTED_LAB_PASSWORD]`, `P@ssw0rd$`, base64 strings) were systematically masked with `[REDACTED_LAB_PASSWORD]`, `[REDACTED_BASE64_USER]`, and `[REDACTED_BASE64_PASSWORD]`.
 - **API Keys & Tokens:** Zero active secrets, cloud credentials, or private SSH keys exist in any staged file.
 
 ---

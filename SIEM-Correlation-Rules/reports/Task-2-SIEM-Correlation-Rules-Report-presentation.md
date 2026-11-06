@@ -56,20 +56,22 @@ The test corpus comprises 10 structured security events simulating both maliciou
 
 ## 3. Detection Engineering: Threat Logic Design
 
-### 3.1 Pillar 1: Credential Stuffing (MITRE ATT&CK T1110.004)
+### 3.1 Pillar 1: Credential Stuffing & Password Spraying (MITRE ATT&CK T1110.004 & T1110.003)
+
+- **Scenario Classification & MITRE ATT&CK Mapping:** The test dataset (`sample-events.jsonl`) contains 5 failed login events across 5 distinct usernames (`alice`, `bob`, `charlie`, `david`, `emma`) from a single IP (`192.0.2.25`) within 12 seconds. In MITRE ATT&CK taxonomy, cycling through multiple accounts with single attempts represents **Password Spraying (T1110.003)** rather than pure Credential Stuffing (T1110.004). The script filename `credential_stuffing_correlation.py` is retained for backwards compatibility with the internship project structure, while the underlying detection logic functions as a dual-purpose cardinality control alerting on both password spraying and distributed credential stuffing.
 * **Threat Mechanism:** Attackers automate high-frequency authentication spraying across disparate usernames from single source IPs. By testing multiple usernames rather than attempting many passwords against a single account, attackers attempt to evade account-lockout policies.
 * **Correlation Logic:**
   - Group incoming authentication events by `source.ip`.
   - Filter for login failure outcomes (`event.outcome: failure` or Windows Security Event ID `4625`).
   - Maintain a rolling sliding window of **5 minutes** (`300 seconds`).
-  - Calculate two distinct thresholds: Total Failure Count $\ge 5$ AND Unique User Count (`cardinality(user.name)`) $\ge 5$.
+  - Calculate two distinct thresholds: Total Failure Count ≥ 5 AND Unique User Count (`cardinality(user.name)`) ≥ 5.
   - When both thresholds are met, generate a High-Severity incident record.
 
 ### 3.2 Pillar 2: DNS Tunneling & Covert Exfiltration (MITRE ATT&CK T1071.004)
 * **Threat Mechanism:** Adversaries use recursive DNS resolvers as covert communication channels to bypass firewall egress filtering. Stolen data or C2 instructions are chunked, encoded in Base32 or Base64, and prepended as sub-labels in queries directed to attacker-controlled authoritative name servers.
 * **Detection Logic:**
   - Ingest network DNS telemetry (`packetbeat-*` or Zeek `dns.log`).
-  - Query Length Check: Flag overall domain query length $\ge 35$ characters.
+  - Query Length Check: Flag overall domain query length ≥ 35 characters.
   - Sub-Label Regex: Apply pattern `^[^.]{20,}\..+$` to ensure the first subdomain label contains at least 20 consecutive characters prior to the primary domain.
   - Record Types: Monitor record types commonly abused for tunneling (`TXT`, `A`, `AAAA`).
 
@@ -157,7 +159,7 @@ Authored in `SIEM-Correlation-Rules/rules/elastic-dsl/`:
 Authored in `SIEM-Correlation-Rules/rules/elastalert/`:
 
 1. **`credential_stuffing.yaml`**: Uses rule type `cardinality` over a 5-minute rolling window, keying on `source.ip` and triggering when cardinality of `user.name` exceeds 4.
-2. **`dns_tunneling.yaml`**: Uses rule type `any` filtering on packetbeat DNS telemetry for length $\ge 35$ bytes and record types TXT/A/AAAA.
+2. **`dns_tunneling.yaml`**: Uses rule type `any` filtering on packetbeat DNS telemetry for length ≥ 35 bytes and record types TXT/A/AAAA.
 3. **`powershell_encoded.yaml`**: Uses rule type `any` filtering on winlogbeat process creation logs for PowerShell with `-EncodedCommand` arguments.
 
 ---
@@ -215,19 +217,19 @@ All three rule sets were validated using standalone, zero-dependency Python test
    ```lucene
    source.ip: "192.0.2.25" AND event.category: "authentication" AND event.outcome: "success"
    ```
-   Verify whether any targeted accounts experienced a subsequent successful login within $+15$ minutes.
+   Verify whether any targeted accounts experienced a subsequent successful login within +15 minutes.
 3. **Containment & Remediation:**
    - Force immediate password resets and terminate active sessions for all targeted accounts (`user1`–`user5`).
    - Implement temporary perimeter firewall blocks or edge WAF rate-limiting for the offending source IP.
 
 ### 6.2 Triage: DNS Tunneling
-1. **Entropy & Payload Inspection:** Calculate Shannon entropy of the subdomain labels (values $> 4.0$ indicate encoded data). Decode Base64 subdomains to inspect carved payload fragments.
+1. **Entropy & Payload Inspection:** Calculate Shannon entropy of the subdomain labels (values > 4.0 indicate encoded data). Decode Base64 subdomains to inspect carved payload fragments.
 2. **Endpoint Process Attribution:** Query endpoint telemetry (Sysmon Event ID 22 or Zeek connection logs) matching the query timestamp to identify the parent process initiating DNS resolution.
 3. **Sinkhole & Isolate:** Configure DNS sinkholing on internal recursive resolvers for `*.exfil.domain.com` and isolate the initiating host from the network.
 
 ### 6.3 Triage: Obfuscated PowerShell
 1. **Deobfuscation:** Base64-decode the Unicode string passed to `-EncodedCommand`. In our synthetic test case:
-   `UABvAHcAZQByAFMAaABlAGwAbAA=` $\rightarrow$ `PowerShell`.
+   `UABvAHcAZQByAFMAaABlAGwAbAA=` → `PowerShell`.
 2. **Parent-Child Ancestry:** Inspect parent process (`process.parent.name`). Standard administration typically originates from `cmd.exe` or `explorer.exe`. Spawns from `WINWORD.EXE`, `EXCEL.EXE`, or web servers (`w3wp.exe`) indicate exploit activity.
 3. **Script Block Inspection:** Examine Windows Event ID `4104` to audit the full deobfuscated script body executed in memory.
 

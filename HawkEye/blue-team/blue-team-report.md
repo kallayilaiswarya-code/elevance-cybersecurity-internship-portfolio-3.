@@ -72,7 +72,7 @@ Every cited frame number below has been verified against the 4,003 packets in `s
 | Elapsed Time | Frame(s) | Observed Network Behavior | Blue Team Detection Opportunity | Severity |
 |---:|:---:|:---|:---|:---:|
 | **~47.4 s** | 204–206 | DNS lookup for `proforma-invoices.com` resolving to `217.182.138.150`. | Newly Registered Domain (NRD) / Threat Feed match. | LOW |
-| **~47.6 s** | 207–3155 | HTTP GET for `/proforma/tkraw_Protected99.exe` returning `200 OK`. | Proposed Suricata alert: Raw PE executable download over HTTP. | **HIGH** |
+| **~47.6 s** | 207–3155 | TCP Handshake (Frames 207–209), HTTP GET in Frame 210, 200 OK in Frame 212, and Payload Transfer across Frames 214–3155. | Proposed Suricata alert: Raw PE executable download over HTTP. | **HIGH** |
 | **~68.5 s** | 3159–3160 | DNS query for `bot.whatismyipaddress.com` resolving to `66.171.248.178`. | Host querying public IP echo service shortly after download. | MEDIUM |
 | **~68.6 s** | 3161–3169 | HTTP GET to `66.171.248.178:80` returning payload `173.66.146.112`. | Egress proxy alert: Programmatic external-IP check. | MEDIUM |
 | **~68.7 s** | 3170–3171 | DNS query for `macwinlogistics.in` resolving to `23.229.162.69`. | DNS anomaly: Direct lookup for unclassified external mail domain. | MEDIUM |
@@ -104,7 +104,7 @@ An exhaustive parse of all 4,003 packets in `stealer.pcap` establishes the exact
 2. **Encryption Status — 100% Unencrypted Cleartext Transport:**
    - Although the mail server advertises `250-STARTTLS` in Frame 3178, the client never initiates `STARTTLS`.
    - There are **zero TLS records** in the capture. No TLS handshake, certificates, or session keys exist.
-   - Authentication commands are transmitted in cleartext using standard RFC 4648 Base64 encoding (`sales.del@macwinlogistics.in` / `Sales@23`), which provides zero cryptographic security.
+   - Authentication commands are transmitted in cleartext using standard RFC 4648 Base64 encoding (`sales.del@macwinlogistics.in` / `[REDACTED_LAB_PASSWORD]`), which provides zero cryptographic security.
    - Network Security Monitoring (NSM) sensors (Zeek, Suricata, Snort) can directly inspect and extract all message content, keystrokes, and victim credentials from port 587 traffic without TLS decryption capabilities.
 
 ---
@@ -115,7 +115,7 @@ To maintain analytical rigor, findings are categorized into three evidentiary ti
 
 | Category | 1. Directly Observed Wire Telemetry | 2. Reasonable Forensic Interpretation | 3. Unobservable from PCAP Alone |
 |---|---|---|---|
-| **Payload Ingress** | HTTP GET for `tkraw_Protected99.exe` transferring 2,025,472 bytes (Frames 207–3155). | File was downloaded onto endpoint file system. | Process launch method (manual user double-click vs. automated spawn). |
+| **Payload Ingress** | HTTP GET for `tkraw_Protected99.exe` in Frame 210 transferring 2,025,472 bytes across reassembled TCP Frames 214–3155 (Handshake: Frames 207–209). | File was downloaded onto endpoint file system. | Process launch method (manual user double-click vs. automated spawn). |
 | **Reconnaissance** | Query to `bot.whatismyipaddress.com` returning `173.66.146.112` (Frames 3159–3166). | External IP check performed to profile victim egress gateway. | Internal command/API execution (`ipconfig` vs. `InternetOpenURLA`). |
 | **Data Collection** | Frame 3194 body containing keystrokes, system info, and bank profile (`oman.mcguire`). | Malware logged keys and harvested credentials from browser databases. | In-memory hooking mechanism (`SetWindowsHookEx`) or RAM buffer during inactivity. |
 | **Exfiltration** | Cleartext Base64 SMTP transmission to `23.229.162.69:587` (`macwinlogistics.in`). | Adversary exfiltrating captured data over unencrypted email submission. | Local PID or thread context owning the outbound socket. |
@@ -201,7 +201,7 @@ flowchart TD
 
 | MITRE ATT&CK TTP | Description | Defensive Countermeasure & Mitigation | Evidentiary Basis |
 |---|---|---|:---:|
-| **T1105** | Ingress Tool Transfer | Web content filtering; inspect raw `.exe` downloads (M1031, M1021) | **Direct Network Evidence** (Frames 207–3155) |
+| **T1105** | Ingress Tool Transfer | Web content filtering; inspect raw `.exe` downloads (M1031, M1021) | **Direct Network Evidence** (Frames 207–3155; GET in Frame 210, Payload in Frames 214–3155) |
 | **T1016** | System Net Config Discovery | Egress traffic filtering on public IP echo services (M1037) | **Direct Network Evidence** (Frames 3159–3166) |
 | **T1071.003**| Mail Protocols | Restrict outbound SMTP (ports 25, 587) exclusively to approved MTAs | **Direct Network Evidence** (Frames 3168–3207) |
 | **T1041** | Exfiltration Over C2 | Deep packet inspection on cleartext Base64 authentication (M1031) | **Direct Network Evidence** (Frame 3194) |
